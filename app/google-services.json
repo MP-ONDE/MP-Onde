@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "586505660839",
+    "project_id": "onde-8fe5b",
+    "storage_bucket": "onde-8fe5b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586505660839:android:7edd24537546c82a49ae82",
+        "android_client_info": {
+          "package_name": "com.seoultech.onde"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMXT72BJSFXCKaNDp2t6hdksgKYqQ_I6M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
