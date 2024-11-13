@@ -1,59 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/profileEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter your profile"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        android:layout_marginTop="32dp"
-        android:padding="16dp" />
-
-    <Button
-        android:id="@+id/saveProfileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Profile"
-        app:layout_constraintTop_toBottomOf="@id/profileEditText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/startDiscoveryButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Bluetooth Discovery"
-        app:layout_constraintTop_toBottomOf="@id/saveProfileButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/setDiscoverableButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Discoverable"
-        app:layout_constraintTop_toBottomOf="@id/startDiscoveryButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/deviceRecyclerView"
+    <!-- 상단 앱바 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setDiscoverableButton" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="ONDE"
+        app:navigationIcon="@drawable/ic_bluetooth"
+        app:menu="@menu/menu_main" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 콘텐츠 영역 -->
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="?attr/actionBarSize">
+
+        <!-- BLE 스캔 시작 버튼 -->
+        <Button
+            android:id="@+id/startScanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BLE 스캔 시작"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
