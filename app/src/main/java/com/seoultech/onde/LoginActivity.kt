@@ -68,7 +68,7 @@ class LoginActivity : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                            startMainActivity()
+                            checkUserAdditionalInfo(auth.currentUser?.uid)
                         } else {
                             Toast.makeText(this, "로그인 실패: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                         }
@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
                             val userId = auth.currentUser?.uid
                             if (userId != null) {
                                 saveUserToFirestore(userId)
-                                startMainActivity()
+                                checkUserAdditionalInfo(userId)
                             } else {
                                 Toast.makeText(this, "사용자 ID를 가져올 수 없습니다.", Toast.LENGTH_LONG).show()
                             }
@@ -106,11 +106,17 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun startAdditionalInfoActivity() {
+        val intent = Intent(this, AdditionalInfoActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private fun saveUserToFirestore(userId: String) {
         val user = hashMapOf(
             "userId" to userId,
-            "username" to "기본 사용자명",
-            "profile" to "기본 프로필 내용"
+            "username" to "기본 사용자명",  // 기본 값
+            "profile" to "기본 프로필 내용" // 기본 값
         )
         db.collection("users").document(userId).set(user)
             .addOnSuccessListener {
@@ -137,6 +143,31 @@ class LoginActivity : AppCompatActivity() {
             }, { error ->
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
             })
+        }
+    }
+
+    // Firestore에서 추가 정보를 확인하여, 없으면 추가 정보 입력 화면으로 이동
+    private fun checkUserAdditionalInfo(userId: String?) {
+        if (userId != null) {
+            db.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        // 사용자 정보가 이미 있으면 바로 MainActivity로
+                        val nickname = document.getString("nickname")
+                        if (nickname.isNullOrEmpty()) {
+                            // nickname이 없으면 추가 정보 입력 화면으로
+                            startAdditionalInfoActivity()
+                        } else {
+                            startMainActivity()
+                        }
+                    } else {
+                        // Firestore에 정보가 없다면, 추가 정보 입력 화면으로
+                        startAdditionalInfoActivity()
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextNickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="닉네임"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="성별"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextAge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="나이"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/editTextInterests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="관심분야"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextSns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="SNS"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextOotd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="OOTD"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextSmallTalk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="오늘의 Small Talk"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/buttonSaveInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="정보 저장" />
+</LinearLayout>
