@@ -21,17 +21,21 @@
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:paddingTop="?attr/actionBarSize">
 
         <!-- BLE 스캔 시작 버튼 -->
         <Button
             android:id="@+id/startScanButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BLE 스캔 시작"
-            android:layout_marginTop="16dp" />
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/radar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
