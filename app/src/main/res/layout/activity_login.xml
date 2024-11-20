@@ -144,7 +144,7 @@
         app:layout_constraintHorizontal_bias="0.8"/>
 
     <Button
-        android:id="@+id/buttonToggleLogin"
+        android:id="@+id/buttonRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -159,15 +159,13 @@
 
     <Button
         android:id="@+id/buttonGoogleLogin"
-        android:layout_width="290dp"
-        android:layout_height="40dp"
-        android:background="@drawable/android_light_sq_si_edited"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="60dp"
-        tools:layout_editor_absoluteY="545dp"
-        android:layout_marginTop="60dp"
-        app:layout_constraintTop_toTopOf="@id/buttonToggleLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="구글 소셜 로그인 하기"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

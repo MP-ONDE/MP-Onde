@@ -2,27 +2,23 @@ package com.seoultech.onde
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.android.gms.common.api.ApiException
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
-    private lateinit var textTitle: TextView
     private lateinit var editTextEmail: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var buttonLogin: Button
-    private lateinit var buttonToggleLogin: Button
+    private lateinit var buttonRegister: Button
     private lateinit var buttonGoogleLogin: Button  // Google Sign-In button
 
-    private var isLoginMode = true
     private val RC_SIGN_IN = 9001  // Request code for Google Sign-In
 
     // GoogleSignInHelper instance
@@ -35,11 +31,10 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        textTitle = findViewById(R.id.textTitle)
         editTextEmail = findViewById(R.id.editTextEmail)
         editTextPassword = findViewById(R.id.editTextPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
-        buttonToggleLogin = findViewById(R.id.buttonToggleLogin)
+        buttonRegister = findViewById(R.id.buttonRegister)
         buttonGoogleLogin = findViewById(R.id.buttonGoogleLogin)  // Reference Google Sign-In button
 
         // Initialize GoogleSignInHelper
@@ -62,41 +57,36 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (isLoginMode) {
-                // Handle login
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                            checkUserAdditionalInfo(auth.currentUser?.uid)
-                        } else {
-                            Toast.makeText(this, "로그인 실패: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-                        }
-                    }
-            } else {
-                // Handle registration
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val userId = auth.currentUser?.uid
-                            if (userId != null) {
-                                saveUserToFirestore(userId)
-                                checkUserAdditionalInfo(userId)
+            // Handle login
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        user?.let {
+                            if (user.isEmailVerified) {
+                                Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                                checkUserAdditionalInfo(user.uid)
                             } else {
-                                Toast.makeText(this, "사용자 ID를 가져올 수 없습니다.", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    this,
+                                    "이메일 인증이 완료되지 않았습니다. 이메일을 확인해주세요.",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
-                        } else {
-                            Toast.makeText(this, "회원가입 실패: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                         }
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "로그인 실패: ${task.exception?.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
-            }
+                }
         }
 
-        buttonToggleLogin.setOnClickListener {
-            isLoginMode = !isLoginMode
-            textTitle.text = if (isLoginMode) "로그인" else "회원가입"
-            buttonLogin.text = if (isLoginMode) "로그인" else "회원가입"
-            buttonToggleLogin.text = if (isLoginMode) "회원가입 하기" else "로그인 하기"
+        buttonRegister.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -110,21 +100,6 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, AdditionalInfoActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-    private fun saveUserToFirestore(userId: String) {
-        val user = hashMapOf(
-            "userId" to userId,
-            "username" to "기본 사용자명",  // 기본 값
-            "profile" to "기본 프로필 내용" // 기본 값
-        )
-        db.collection("users").document(userId).set(user)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Firestore에 사용자 정보 저장 성공", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Firestore에 사용자 정보 저장 실패", Toast.LENGTH_SHORT).show()
-            }
     }
 
     private fun signInWithGoogle() {
