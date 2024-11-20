@@ -14,7 +14,14 @@
         android:theme="@style/Theme.ONDE"
         tools:targetApi="31">
         <!-- LoginActivity 등록 -->
-        <activity android:name=".LoginActivity" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".RegisterActivity" />
 
         <!-- ProfileEditActivity 등록 -->
@@ -24,15 +31,6 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".AdditionalInfoActivity" />
 
-        <activity
-            android:name=".App"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
     <!-- 위치 권한 -->

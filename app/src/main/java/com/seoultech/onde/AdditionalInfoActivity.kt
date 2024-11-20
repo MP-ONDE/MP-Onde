@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 
@@ -135,8 +136,18 @@ class AdditionalInfoActivity : AppCompatActivity() {
         val uploadTask = storageRef.putFile(selectedPhotoUri!!)
 
         uploadTask.addOnSuccessListener {
-            Toast.makeText(this, "사진이 저장되었습니다.", Toast.LENGTH_SHORT).show()
-            startMainActivity()
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                val photoUrl = uri.toString()
+                db.collection("users").document(userId).set(
+                    mapOf("photoUrl" to photoUrl),
+                    SetOptions.merge()
+                ).addOnSuccessListener {
+                    Toast.makeText(this, "사진이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                    startMainActivity()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(this, "사진 URL 가져오기 실패", Toast.LENGTH_SHORT).show()
+            }
         }.addOnFailureListener {
             Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show()
         }
