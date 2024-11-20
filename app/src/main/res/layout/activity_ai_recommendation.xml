@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- 상단 앱바 (닫기 버튼 포함) -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBarSmallTalk"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:paddingStart="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:navigationIcon="@drawable/ic_back"
+        app:menu="@menu/menu_ai_recommendation"/>
+
+
+    <!-- 콘텐츠 영역 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="23dp">
+
+        <TextView
+            android:id="@+id/smallTalkAdvice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="스몰토크가 어려우신가요? 멘트를 추천해드려요."
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/crawledSentences"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="여기에서 추천 멘트가 표시됩니다." />
+
+        <TextView
+            android:id="@+id/aiQuestionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="그래도 모르겠다면 AI에게 물어보세요!"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/aiQuestionInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:hint="AI에게 물어보세요..."
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/askAiButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI에게 물어보기"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/aiRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI의 추천!"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/gptAnswer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI의 답변이 여기에 표시됩니다."
+            android:textSize="16sp"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

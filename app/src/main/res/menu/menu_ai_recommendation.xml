@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 뒤로 가기 버튼을 메뉴 항목으로 추가 -->
+    <item
+        android:id="@+id/backButton"
+        android:title="Back"
+        android:icon="@drawable/ic_back"
+        android:showAsAction="ifRoom" />
+</menu>

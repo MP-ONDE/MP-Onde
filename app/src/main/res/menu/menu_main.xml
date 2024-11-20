@@ -12,5 +12,11 @@
         android:title="로그아웃"
         android:icon="@drawable/ic_logout"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_question"
+        android:title="AI 추천"
+        android:icon="@drawable/ic_question"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
 
 </menu>

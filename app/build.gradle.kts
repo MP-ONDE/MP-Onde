@@ -57,6 +57,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+
     // Import the Firebase BoM
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
@@ -80,5 +81,8 @@ dependencies {
 
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.google.android.material:material:1.9.0")
+    implementation ("org.jsoup:jsoup:1.15.4")
+
+
 
 }

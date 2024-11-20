@@ -466,21 +466,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+        when (item.itemId) {
             R.id.menu_edit_profile -> {
                 val intent = Intent(this, ProfileEditActivity::class.java)
                 startActivity(intent)
-                true
+                return true
             }
             R.id.menu_logout -> {
                 auth.signOut()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
-                true
+                return true
             }
-            else -> super.onOptionsItemSelected(item)
+            R.id.action_question -> {
+                // AI 추천 메뉴 아이템 클릭 시 AIRecommendationBottomSheetFragment를 다이얼로그 형식으로 띄우기
+                showAIRecommendationFragment()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showAIRecommendationFragment() {
+        // AIRecommendationBottomSheetFragment 인스턴스를 생성하고 다이얼로그로 띄우기
+        val fragment = AIRecommendationBottomSheetFragment.newInstance()
+        fragment.show(supportFragmentManager, fragment.tag)
     }
 
 }
