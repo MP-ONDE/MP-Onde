@@ -411,9 +411,9 @@ class MainActivity : AppCompatActivity() {
                     .addOnSuccessListener { documents ->
                         if (!documents.isEmpty) {
                             for (document in documents) {
-                                val profile = document.getString("profile")
-                                Toast.makeText(this@MainActivity, "발견된 사용자 프로필: $profile", Toast.LENGTH_LONG).show()
-                                Log.d("Scanner", "프로필 발견: $profile")
+                                val nickname = document.getString("nickname")
+                                Toast.makeText(this@MainActivity, "발견된 사용자 닉네임: $nickname", Toast.LENGTH_LONG).show()
+                                Log.d("Scanner", ".사용자 발견: $nickname")
                             }
                         } else {
                             Log.d("Scanner", "쿼리 성공, 하지만 결과 없음")

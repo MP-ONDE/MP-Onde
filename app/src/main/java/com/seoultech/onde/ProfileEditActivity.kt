@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
+import com.seoultech.onde.HashUtils.generateUserIdHash
 import java.io.ByteArrayOutputStream
 import com.squareup.picasso.Picasso
 
@@ -146,6 +147,7 @@ class ProfileEditActivity : AppCompatActivity() {
         val ootd = editTextOotd.text.toString().trim()
         val smallTalk = editTextSmallTalk.text.toString().trim()
         val sns = editTextSns.text.toString().trim()
+        val userIdHash = generateUserIdHash(userId)
 
         if (nickname.isEmpty() || selectedGender == null || age.isEmpty() ||
             interests.isEmpty() || ootd.isEmpty() || smallTalk.isEmpty()
@@ -161,7 +163,8 @@ class ProfileEditActivity : AppCompatActivity() {
             "interests" to interests,
             "ootd" to ootd,
             "smallTalk" to smallTalk,
-            "sns" to sns
+            "sns" to sns,
+            "userIdHash" to userIdHash
         )
 
         db.collection("users").document(userId).get().addOnSuccessListener { document ->
