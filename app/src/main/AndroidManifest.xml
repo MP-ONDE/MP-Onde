@@ -2,6 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.seoultech.onde">
+    <!-- 위치 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Android 11 이하에서 필요한 권한 -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" /> <!-- Android 12 이상에서 필요한 권한 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
     <application
         android:allowBackup="true"
@@ -13,39 +25,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ONDE"
         tools:targetApi="31">
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
         <!-- LoginActivity 등록 -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
-
-        <!-- ProfileEditActivity 등록 -->
-        <activity android:name=".ProfileEditActivity" />
-
-        <!-- MainActivity 등록 -->
+        <activity android:name=".RegisterActivity" /> <!-- ProfileEditActivity 등록 -->
+        <activity android:name=".ProfileEditActivity" /> <!-- MainActivity 등록 -->
         <activity android:name=".MainActivity" />
         <activity android:name=".AdditionalInfoActivity" />
-
     </application>
-
-    <!-- 위치 권한 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- Android 11 이하에서 필요한 권한 -->
-    <uses-permission android:name="android.permission.BLUETOOTH"
-        android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-        android:maxSdkVersion="30" />
-
-    <!-- Android 12 이상에서 필요한 권한 -->
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
 </manifest>

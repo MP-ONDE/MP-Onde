@@ -1,0 +1,45 @@
+<!-- res/layout/item_user.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/nicknameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="닉네임"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/smallTalkTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="smalltalk:"
+        android:textSize="14sp"
+        android:textColor="#444444"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/ootdTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ootd:"
+        android:textSize="14sp"
+        android:textColor="#444444"
+        android:layout_marginTop="4dp"/>
+]
+
+    <TextView
+        android:id="@+id/rssiTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RSSI:"
+        android:textSize="14sp"
+        android:textColor="#888888"
+        android:layout_marginTop="4dp"/>
+
+</LinearLayout>
