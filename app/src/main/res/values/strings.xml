@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ONDE</string>
+    <string name="default_web_client_id">586505660839-l49f6vrbkgm1qdnij6kkgcg1eu4en8v7.apps.googleusercontent.com</string>
+    <string name="background_image_description">Background image of the app</string>
+</resources>

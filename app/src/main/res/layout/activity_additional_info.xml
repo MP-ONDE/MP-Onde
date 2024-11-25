@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/additionalInfoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Additional Info."
+            android:textColor="#000000"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="2"
+        />
+        <!-- Nickname -->
+        <TextView
+            android:id="@+id/nicknameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nickname"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <EditText
+            android:id="@+id/editTextNickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="닉네임 (최대 10자)"
+            android:maxLength="10"
+            android:inputType="text" />
+
+        <!-- Gender Selection -->
+        <TextView
+            android:id="@+id/genderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="남" />
+
+            <RadioButton
+                android:id="@+id/radioFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="여" />
+        </RadioGroup>
+
+        <!-- Age -->
+        <TextView
+            android:id="@+id/ageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Age"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <EditText
+            android:id="@+id/editTextAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="나이"
+            android:inputType="number" />
+
+        <!-- Interests -->
+        <TextView
+            android:id="@+id/interestText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Interest"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <EditText
+            android:id="@+id/editTextInterests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="관심분야 (최대 30자)"
+            android:maxLength="30"
+            android:inputType="text" />
+
+        <!-- OOTD -->
+        <TextView
+            android:id="@+id/ootdText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Outfit of The Day"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <EditText
+            android:id="@+id/editTextOotd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="OOTD (최대 50자)"
+            android:maxLength="50"
+            android:inputType="text" />
+
+        <!-- Small Talk -->
+        <TextView
+            android:id="@+id/smalltalkText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today's Small Talk"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <EditText
+            android:id="@+id/editTextSmallTalk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="오늘의 Small Talk (최대 30자)"
+            android:maxLength="30"
+            android:inputType="text" />
+
+        <!-- SNS -->
+        <TextView
+            android:id="@+id/snsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SNS Profile ( Optional )"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
+        <EditText
+            android:id="@+id/editTextSns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="SNS 링크 (선택)"
+            android:inputType="textUri" />
+
+        <!-- Photo Label (TextView) -->
+        <TextView
+            android:id="@+id/photoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Photo ( Optional )"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+        <!-- Photo Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/buttonUploadPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#FF6F61"
+                android:textSize="15sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:text="Upload"
+                android:layout_marginEnd="8dp"
+                android:textAllCaps="false"/>
+
+            <Button
+                android:id="@+id/buttonTakePhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#FF6F61"
+                android:textSize="15sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:text="Camera"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <!-- Photo Preview -->
+        <ImageView
+            android:id="@+id/imageViewPhotoPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="8dp"
+            android:background="#CCCCCC" />
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/buttonSaveInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FF6F61"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:text="Save"
+            android:layout_gravity="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </LinearLayout>
+</ScrollView>

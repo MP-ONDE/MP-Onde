@@ -1,0 +1,66 @@
+# Android 관련 빌드 파일
+/build/
+/.idea/
+/.gradle/
+/local.properties
+/.cxx/
+/captures/
+/outputs/
+
+# IntelliJ IDEA / Android Studio 파일
+.idea/workspace.xml
+.idea/libraries
+.idea/misc.xml
+.idea/modules.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/vcs.xml
+*.iml
+*.hprof
+
+# 로그 파일
+*.log
+
+# MacOS 파일
+.DS_Store
+
+# Linux 파일
+*~
+
+# Windows 파일
+Thumbs.db
+Desktop.ini
+
+# Gradle Wrapper
+/gradle/wrapper/gradle-wrapper.properties
+
+# 빌드 결과물
+*.apk
+*.aar
+*.dex
+
+# 디버그 키스토어
+*.jks
+
+# Kotlin 특성에 따른 설정 파일 무시
+*.kotlin_module
+
+# Android Lint 결과
+lint/intermediates/
+/lint/generated/
+
+# 데이터베이스 파일
+*.db
+*.sqlite
+
+# 사용자 설정
+.idea/codeStyles/
+.idea/inspectionProfiles/
+.idea/gradle.xml
+
+# Android Studio 3.1+에서 생성된 자동 파일
+.idea/
+.idea/caches
+
+# 캐시 및 기타 임시 파일
+.idea/.name
