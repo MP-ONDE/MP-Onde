@@ -72,9 +72,15 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
             ) {
                 if (response.isSuccessful) {
                     val data = response.body() ?: emptyList()
-                    val crawledText = data.joinToString("\n\n") { it }
 
-                    crawledSentences.text = crawledText.ifEmpty { "추천 멘트가 없습니다." }
+                    // 랜덤으로 하나의 문장 선택
+                    val randomText = if (data.isNotEmpty()) {
+                        data.random() // List에서 랜덤으로 하나 선택
+                    } else {
+                        "추천 멘트가 없습니다." // 데이터가 없을 경우 기본 문구
+                    }
+
+                    crawledSentences.text = randomText
                 } else {
                     Log.e("APIError", "Response not successful: ${response.code()} - ${response.message()}")
                     crawledSentences.text = "서버 응답 실패: ${response.code()}"
@@ -87,6 +93,7 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
             }
         })
     }
+
 
 
     private fun fetchGPTResponse(userQuestion: String, gptAnswer: TextView) {
