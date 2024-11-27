@@ -85,6 +85,9 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("org.jsoup:jsoup:1.15.4")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
+
+
 
 
 

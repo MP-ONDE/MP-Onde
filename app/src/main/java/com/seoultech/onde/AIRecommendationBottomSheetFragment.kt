@@ -21,11 +21,12 @@ import java.io.IOException
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 class AIRecommendationBottomSheetFragment : DialogFragment() {
-
+//    private val apiKey 여기에 추가해야 정상적으로 작동함
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -97,13 +98,17 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
 
 
     private fun fetchGPTResponse(userQuestion: String, gptAnswer: TextView) {
-       //ap
-        val apiUrl = "https://api.openai.com/v1/completions"
+        val apiUrl = "https://api.openai.com/v1/chat/completions"
 
         val client = OkHttpClient()
         val jsonBody = JSONObject().apply {
-            put("model", "text-davinci-003")
-            put("prompt", userQuestion)
+            put("model", "gpt-3.5-turbo") // 최신 모델 사용
+            put("messages", JSONArray().apply {
+                put(JSONObject().apply {
+                    put("role", "user")
+                    put("content", userQuestion)
+                })
+            })
             put("max_tokens", 100)
             put("temperature", 0.7)
         }
@@ -111,7 +116,7 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
         val requestBody = jsonBody.toString().toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
             .url(apiUrl)
-//            .addHeader("Authorization", "Bearer $apiKey")
+            .addHeader("Authorization", "Bearer $apiKey")
             .post(requestBody)
             .build()
 
@@ -123,7 +128,8 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
                     val jsonResponse = JSONObject(responseBody ?: "")
                     val gptResponse = jsonResponse.getJSONArray("choices")
                         .getJSONObject(0)
-                        .getString("text")
+                        .getJSONObject("message")
+                        .getString("content")
                         .trim()
 
                     withContext(Dispatchers.Main) {
@@ -141,6 +147,7 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
             }
         }
     }
+
 
 
     companion object {
