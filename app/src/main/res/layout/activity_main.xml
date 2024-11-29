@@ -14,7 +14,6 @@
         android:background="?attr/colorPrimary"
         app:title="ONDE"
         app:navigationIcon="@drawable/ic_bluetooth"
-
         app:menu="@menu/menu_main" />
 
     <!-- 콘텐츠 영역 -->
@@ -32,6 +31,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BLE 스캔 시작"
+            android:layout_marginTop="16dp" />
+
+        <!-- 테스트용 채팅방 열기 버튼 -->
+        <Button
+            android:id="@+id/openChatRoomButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="테스트용 채팅방 열기"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>
