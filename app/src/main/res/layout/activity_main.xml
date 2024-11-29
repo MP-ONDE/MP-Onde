@@ -1,55 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-
+    <!-- 상단 앱바 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
         android:layout_width="match_parent"
-        android:layout_height="355dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="ONDE"
+        app:navigationIcon="@drawable/ic_bluetooth"
 
-        <!-- 상단 앱바 -->
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:menu="@menu/menu_main"
-            app:navigationIcon="@drawable/ic_bluetooth"
-            app:title="ONDE" />
+        app:menu="@menu/menu_main" />
 
-        <!-- 콘텐츠 영역 -->
-        <LinearLayout
-            android:id="@+id/contentLayout"
-            android:layout_width="match_parent"
-            android:layout_height="357dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingTop="?attr/actionBarSize">
-
-            <!-- BLE 스캔 시작 버튼 -->
-            <Button
-                android:id="@+id/startScanButton"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/radar"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </LinearLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <!-- 콘텐츠 영역 -->
+    <LinearLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="?attr/actionBarSize">
 
-</LinearLayout>
+        <!-- BLE 스캔 시작 버튼 -->
+        <Button
+            android:id="@+id/startScanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BLE 스캔 시작"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

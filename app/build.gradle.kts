@@ -56,6 +56,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
 
     // Import the Firebase BoM
     // When using the BoM, don't specify versions in Firebase dependencies
@@ -80,6 +83,14 @@ dependencies {
 
     implementation ("androidx.appcompat:appcompat:1.6.1")
     implementation ("com.google.android.material:material:1.9.0")
+    implementation ("org.jsoup:jsoup:1.15.4")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
+
+
+
+
+
 
     // picasso
     implementation ("com.squareup.picasso:picasso:2.71828")
