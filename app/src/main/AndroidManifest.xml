@@ -25,6 +25,8 @@
         <!-- MainActivity 등록 -->
         <activity android:name=".MainActivity" />
         <activity android:name=".AdditionalInfoActivity" />
+        <activity android:name=".ChatRoomActivity" />
+
 
         <activity
             android:name=".App"
@@ -52,5 +54,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
 
 </manifest>
