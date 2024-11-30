@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         topAppBar = findViewById(R.id.topAppBar)
         startScanButton = findViewById(R.id.startScanButton)
+        recyclerView = findViewById(R.id.recyclerView) // XML 레이아웃에 RecyclerView 추가
 
         startScanButton.setOnClickListener {
             checkPermissionsAndStartScan()
@@ -151,6 +152,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         //임의의 채팅방을 만들어서 주제 추천을 위한 임의의 코드
+
+        userAdapter = UserAdapter(scannedUsers)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = userAdapter
 
         updateAdvertiseButtonIcon()
     }

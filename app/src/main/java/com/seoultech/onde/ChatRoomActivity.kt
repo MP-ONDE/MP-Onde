@@ -69,6 +69,7 @@ class ChatRoomActivity : AppCompatActivity() {
     private suspend fun generateSmallTalkTopic(interests1: String, interests2: String): String {
         val apiUrl = "https://api.openai.com/v1/chat/completions"
 //        val apiKey를 작성하면 됩니다
+        val apiKey = "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"
         val prompt = "사용자 A는 '$interests1'에 관심이 있고, 사용자 B는 '$interests2'에 관심이 있습니다. 두 관심사와 관련된 흥미로운 스몰토크 주제를 한 줄로 제안해주세요."
 
         val jsonBody = JSONObject().apply {
