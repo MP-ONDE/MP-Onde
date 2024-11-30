@@ -26,7 +26,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 class AIRecommendationBottomSheetFragment : DialogFragment() {
-//    private val apiKey = " "
+    private val apiKey = " "
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

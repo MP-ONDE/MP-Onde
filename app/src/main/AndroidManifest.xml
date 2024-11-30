@@ -14,7 +14,16 @@
         android:theme="@style/Theme.ONDE"
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="true"
+
         tools:targetApi="31">
+        <!-- ProfileEditActivity 등록 -->
+        <activity android:name=".ProfileEditActivity" />
+
+        <!-- MainActivity 등록 -->
+        <activity android:name=".MainActivity" />
+        <activity android:name=".AdditionalInfoActivity" />
+        <activity android:name=".DailyInformationActivity" />
+
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
@@ -26,9 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileEditActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".AdditionalInfoActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ChatRoomActivity" />
     </application>
@@ -47,6 +53,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 
 
