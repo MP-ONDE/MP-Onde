@@ -32,8 +32,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -75,14 +73,14 @@ class MainActivity : AppCompatActivity() {
     private val scannedUsers = mutableListOf<User>()
 
     // 사용자와 버튼 매핑을 위한 Map 추가
-    private val userButtonMap = mutableMapOf<User, View>()
+    private val userButtonMap = mutableMapOf<String, View>()
 
     // activatedButtons를 Map으로 변경
-    private val activatedButtons = mutableMapOf<User, View>()
+    private val activatedButtons = mutableMapOf<String, View>()
 
     // RSSI 영역 기준
-    private val RSSI_RANGE_LOW = -80
-    private val RSSI_RANGE_MID = -40
+    private val RSSI_RANGE_LOW = -90
+    private val RSSI_RANGE_MID = -60
 
 
     //위젯
@@ -457,108 +455,115 @@ class MainActivity : AppCompatActivity() {
             val serviceUuid = ParcelUuid(SERVICE_UUID)
             val serviceData = result.scanRecord?.getServiceData(serviceUuid)
             val rssi = result.rssi
-            val currentTime = System.currentTimeMillis() // 현재 시간
+            val currentTime = System.currentTimeMillis()
 
             if (serviceData != null) {
                 val userIdHashString = Base64.encodeToString(serviceData, Base64.NO_WRAP)
 
                 if (scannedUserHashes.add(userIdHashString)) {
-                    // 새로운 사용자
+                    // New user
                     val user = User(userIdHashString, "Unknown", "", "", rssi, currentTime)
                     scannedUsers.add(user)
-                    fetchUserInfo(userIdHashString, rssi)
                     updateButtonsBasedOnRssi(user)
+                    fetchUserInfo(userIdHashString, rssi)
                 } else {
-                    // 기존 사용자 -> RSSI 및 마지막 인식 시간 업데이트
-                    val userIndex = scannedUsers.indexOfFirst { it.userIdHash == userIdHashString }
-                    if (userIndex != -1) {
-                        val user = scannedUsers[userIndex]
-                        scannedUsers[userIndex] = user.copy(rssi = rssi, lastSeenTimestamp = currentTime)
-                        updateUserRssi(userIdHashString, rssi)
-                    }
+                    // Existing user; update RSSI and timestamp
+                    updateUserRssi(userIdHashString, rssi)
                 }
             } else {
-                Log.e("Scanner", "serviceData를 가져올 수 없습니다.")
+                Log.e("Scanner", "Unable to retrieve serviceData.")
             }
         }
     }
 
-    // updateButtonsBasedOnRssi 함수 수정
+    // updateButtonsBasedOnRssi 버튼 그룹을 세기에 따라 할당해주는 코드
     private fun updateButtonsBasedOnRssi(user: User) {
         val rssi = user.rssi
+        val userIdHash = user.userIdHash
         runOnUiThread {
-            // 버튼 그룹 선택
+            // Select button group based on RSSI
             val buttonGroup = when {
-                rssi <= RSSI_RANGE_LOW -> userButtons.subList(0, 6) // user1 to user6
-                rssi in (RSSI_RANGE_LOW + 1)..RSSI_RANGE_MID -> userButtons.subList(6, 14) // user7 to user14
-                else -> userButtons.subList(14, 20) // user15 to user20
+                rssi <= RSSI_RANGE_LOW -> userButtons.subList(14, 20)
+                rssi in (RSSI_RANGE_LOW + 1)..RSSI_RANGE_MID -> userButtons.subList(6, 14)
+                else -> userButtons.subList(0, 6)
             }
 
-            val currentButton = userButtonMap[user]
+            val currentButton = userButtonMap[userIdHash]
 
             if (currentButton != null) {
-                // 버튼이 올바른 그룹에 있는지 확인
                 if (currentButton in buttonGroup) {
-                    // 버튼이 올바른 그룹에 있음, 아무 것도 하지 않음
+                    // Button is in the correct group; do nothing
                 } else {
-                    // 버튼이 다른 그룹에 있음, 버튼 재할당 필요
+                    // Reassign button to correct group
                     currentButton.visibility = View.GONE
-                    currentButton.setOnClickListener(null) // 리스너 제거
-                    activatedButtons.remove(user)
-                    userButtonMap.remove(user)
+                    currentButton.setOnClickListener(null)
+                    activatedButtons.remove(userIdHash)
+                    userButtonMap.remove(userIdHash)
 
-                    // 새로운 버튼 할당
                     assignButtonToUser(buttonGroup, user)
-
-                    // 새로운 버튼 할당
-                    val availableButtons = buttonGroup.filter { it !in activatedButtons.values }
                 }
             } else {
-                // 아직 버튼이 할당되지 않음, 새로운 버튼 할당
+                // Assign new button
                 assignButtonToUser(buttonGroup, user)
             }
         }
     }
 
-    // removeInactiveDevices 함수 수정
+
+    // removeInactiveDevices 5초 이상 비활성화이면 삭제
     private fun removeInactiveDevices() {
         val currentTime = System.currentTimeMillis()
         val inactiveUsers = scannedUsers.filter { user ->
-            currentTime - user.lastSeenTimestamp > 5000 // 5초 이상 비활성 상태
+            currentTime - user.lastSeenTimestamp > 5000 // Inactive for over 5 seconds
         }
 
         runOnUiThread {
             inactiveUsers.forEach { user ->
-                // 버튼 숨기기
-                val button = userButtonMap[user]
+                val userIdHash = user.userIdHash
+                // Hide and remove the button
+                val button = userButtonMap[userIdHash]
                 if (button != null) {
                     button.visibility = View.GONE
-                    button.setOnClickListener(null) // 리스너 제거
-                    activatedButtons.remove(user)
-                    userButtonMap.remove(user)
+                    button.setOnClickListener(null)
+                    activatedButtons.remove(userIdHash)
+                    userButtonMap.remove(userIdHash)
                 }
-                // 리스트에서 제거
+                // Remove user from lists
                 scannedUsers.remove(user)
-                scannedUserHashes.remove(user.userIdHash)
+                scannedUserHashes.remove(userIdHash)
             }
         }
     }
 
     private fun assignButtonToUser(buttonGroup: List<View>, user: User) {
+        val userIdHash = user.userIdHash
+
+        // Check if the user already has an assigned button
+        val existingButton = userButtonMap[userIdHash]
+        if (existingButton != null) {
+            // Hide and remove the existing button
+            existingButton.visibility = View.GONE
+            existingButton.setOnClickListener(null)
+            activatedButtons.remove(userIdHash)
+            userButtonMap.remove(userIdHash)
+        }
+
+        // Find available buttons not already assigned
         val availableButtons = buttonGroup.filter { it !in activatedButtons.values }
 
         if (availableButtons.isNotEmpty()) {
             val buttonToActivate = availableButtons.first()
             buttonToActivate.visibility = View.VISIBLE
             buttonToActivate.setOnClickListener {
-                navigateToProfileActivity(user.userIdHash)
+                navigateToProfileActivity(userIdHash)
             }
-            activatedButtons[user] = buttonToActivate
-            userButtonMap[user] = buttonToActivate
+            activatedButtons[userIdHash] = buttonToActivate
+            userButtonMap[userIdHash] = buttonToActivate
         } else {
-            Log.w("UpdateButtons", "활성화 가능한 버튼이 없습니다!")
+            Log.w("UpdateButtons", "No available buttons to activate!")
         }
     }
+
 
     // 주기적으로 연결 상태를 확인
     private val connectionCheckHandler = Handler(Looper.getMainLooper())
@@ -603,44 +608,60 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchUserInfo(userIdHash: String, rssi: Int) {
-        val currentTime = System.currentTimeMillis() // 현재 시간
+        val currentTime = System.currentTimeMillis()
 
         db.collection("users")
             .whereEqualTo("userIdHash", userIdHash)
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    for (document in documents) {
-                        val nickname = document.getString("nickname") ?: "Unknown"
-                        val smallTalk = document.getString("smallTalk") ?: ""
-                        val ootd = document.getString("ootd") ?: ""
+                    val document = documents.first()
+                    val nickname = document.getString("nickname") ?: "Unknown"
+                    val smallTalk = document.getString("smallTalk") ?: ""
+                    val ootd = document.getString("ootd") ?: ""
+
+                    // Update existing user in scannedUsers
+                    val index = scannedUsers.indexOfFirst { it.userIdHash == userIdHash }
+                    if (index != -1) {
+                        val user = scannedUsers[index]
+                        scannedUsers[index] = user.copy(
+                            nickname = nickname,
+                            smallTalk = smallTalk,
+                            ootd = ootd,
+                            rssi = rssi,
+                            lastSeenTimestamp = currentTime
+                        )
+                        updateButtonsBasedOnRssi(scannedUsers[index])
+                    } else {
+                        // Should not happen, but handle just in case
                         val user = User(userIdHash, nickname, ootd, smallTalk, rssi, currentTime)
                         scannedUsers.add(user)
-
-                        // RSSI 값에 따라 리스트 정렬
-                        scannedUsers.sortByDescending { it.rssi }
-                        Log.d("Scanner", "사용자 정보 추가: $nickname, RSSI: $rssi")
+                        updateButtonsBasedOnRssi(user)
                     }
                 } else {
-                    Log.d("Scanner", "사용자 정보를 찾을 수 없습니다: $userIdHash")
+                    Log.d("Scanner", "No user info found for: $userIdHash")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("Scanner", "사용자 정보 조회 실패: ${exception.message}")
+                Log.e("Scanner", "Failed to fetch user info: ${exception.message}")
             }
     }
 
-    // updateUserRssi 함수 수정
+
     private fun updateUserRssi(userIdHash: String, rssi: Int) {
         val index = scannedUsers.indexOfFirst { it.userIdHash == userIdHash }
         if (index != -1) {
             val user = scannedUsers[index]
             if (user.rssi != rssi) {
-                scannedUsers[index] = user.copy(rssi = rssi, lastSeenTimestamp = System.currentTimeMillis())
+                scannedUsers[index] = user.copy(
+                    rssi = rssi,
+                    lastSeenTimestamp = System.currentTimeMillis()
+                )
                 updateButtonsBasedOnRssi(scannedUsers[index])
             }
         }
     }
+
 
     // 탑 바와 관련된 menu, layout 불러오기
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
