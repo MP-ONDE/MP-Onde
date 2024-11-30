@@ -21,15 +21,12 @@ import java.io.IOException
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
-import kotlinx.coroutines.delay
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.Semaphore
-
 class AIRecommendationBottomSheetFragment : DialogFragment() {
-    private val apiKey = getString(R.string.openai_api_key)
+//    private val apiKey = " "
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -102,25 +99,19 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
 
     private fun fetchGPTResponse(userQuestion: String, gptAnswer: TextView) {
         val apiUrl = "https://api.openai.com/v1/chat/completions"
-        val client = OkHttpClient()
-        val semaphore = Semaphore(1) // 동시 요청 수 제한 (1로 설정)
 
+        val client = OkHttpClient()
         val jsonBody = JSONObject().apply {
-            put("model", "gpt-3.5-turbo")
+            put("model", "gpt-3.5-turbo") // 최신 모델 사용
             put("messages", JSONArray().apply {
-                put(JSONObject().apply {
-                    put("role", "system")
-                    put("content", "You are an assistant.") // 시스템 역할 지정
-                })
                 put(JSONObject().apply {
                     put("role", "user")
                     put("content", userQuestion)
                 })
             })
-            put("max_tokens", 50)
+            put("max_tokens", 100)
             put("temperature", 0.7)
         }
-
 
         val requestBody = jsonBody.toString().toRequestBody("application/json".toMediaType())
         val request = Request.Builder()
@@ -130,14 +121,11 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
             .build()
 
         CoroutineScope(Dispatchers.IO).launch {
-            semaphore.acquire() // 요청 시작 시 세마포어 획득
             try {
-                Log.d("GPTRequest", "요청 시작: $userQuestion")
                 val response = client.newCall(request).execute()
-                val responseBody = response.body?.string()
-
-                if (response.isSuccessful && responseBody != null) {
-                    val jsonResponse = JSONObject(responseBody)
+                if (response.isSuccessful) {
+                    val responseBody = response.body?.string()
+                    val jsonResponse = JSONObject(responseBody ?: "")
                     val gptResponse = jsonResponse.getJSONArray("choices")
                         .getJSONObject(0)
                         .getJSONObject("message")
@@ -147,31 +135,18 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
                     withContext(Dispatchers.Main) {
                         gptAnswer.text = gptResponse
                     }
-
-                    Log.d("GPTRequest", "응답 성공: $gptResponse")
                 } else {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(context, "GPT 응답 실패: ${response.code}", Toast.LENGTH_SHORT).show()
                     }
-
-                    Log.e("GPTRequest", "응답 실패: ${response.code} - ${response.message}")
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
-
-                Log.e("GPTRequest", "네트워크 오류: ${e.message}", e)
-            } finally {
-                semaphore.release() // 요청 완료 시 세마포어 해제
-                Log.d("GPTRequest", "요청 종료: $userQuestion")
-
-                // 요청 간 딜레이 추가 (1초)
-                delay(1000)
             }
         }
     }
-
 
 
 
