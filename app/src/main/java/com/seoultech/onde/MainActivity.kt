@@ -22,6 +22,8 @@ import android.util.Base64
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -62,6 +64,7 @@ class MainActivity : AppCompatActivity() {
     // BLE 스캔 상태를 추적하기 위한 변수
     private var isScanning = false
     private var isAdvertising = false
+
     // BLE 스캔 중지 핸들러
     private val scanHandler = Handler(Looper.getMainLooper())
 
@@ -71,14 +74,15 @@ class MainActivity : AppCompatActivity() {
     // 사용자 정보를 저장할 리스트
     private val scannedUsers = mutableListOf<User>()
 
+    /* 일단 recyler view 안 쓰니까 제거한 상태
     // RecyclerView 및 어댑터
     private lateinit var recyclerView: RecyclerView
-    private lateinit var userAdapter: UserAdapter
+    private lateinit var userAdapter: UserAdapter*/
 
     //위젯
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var startScanButton: Button
-
+    private lateinit var userButtons: List<View>
 
     // 생성
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +92,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         // UI 요소 초기화 및 이벤트 리스너 설정
         initViews()
+
+        adjustTopMarginForStatusBar()
+
+        startConnectionCheck() // 연결 상태 확인 시작
+
+        userButtons = listOf(
+            findViewById(R.id.user1), findViewById(R.id.user2), findViewById(R.id.user3),
+            findViewById(R.id.user4), findViewById(R.id.user5), findViewById(R.id.user6),
+            findViewById(R.id.user7), findViewById(R.id.user8), findViewById(R.id.user9),
+            findViewById(R.id.user10), findViewById(R.id.user11), findViewById(R.id.user12),
+            findViewById(R.id.user13), findViewById(R.id.user14), findViewById(R.id.user15),
+            findViewById(R.id.user16), findViewById(R.id.user17), findViewById(R.id.user18),
+            findViewById(R.id.user19), findViewById(R.id.user20)
+        )
+
+        // Hide all buttons initially
+        userButtons.forEach { it.visibility = View.GONE }
+
         // 상단 앱바 설정
         setSupportActionBar(topAppBar)
         topAppBar.setNavigationOnClickListener {
@@ -138,18 +160,34 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         topAppBar = findViewById(R.id.topAppBar)
         startScanButton = findViewById(R.id.startScanButton)
-        recyclerView = findViewById(R.id.recyclerView) // XML 레이아웃에 RecyclerView 추가
+        //recyclerView = findViewById(R.id.recyclerView) // XML 레이아웃에 RecyclerView 추가
 
         startScanButton.setOnClickListener {
             checkPermissionsAndStartScan()
         }
 
+        /* RecyclerView 안 쓰니까 일단 주석 처리
         userAdapter = UserAdapter(scannedUsers)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = userAdapter
+        recyclerView.adapter = userAdapter*/
 
         updateAdvertiseButtonIcon()
     }
+
+    private fun adjustTopMarginForStatusBar() {
+        val rootLayout: View = findViewById(R.id.mainActivity) // 최상위 레이아웃 ID
+        rootLayout.setOnApplyWindowInsetsListener { view, insets ->
+            val statusBarHeight = insets.systemWindowInsetTop // 상태바 높이
+
+            // LayoutParams를 가져와 topMargin 추가
+            val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+            layoutParams.topMargin = statusBarHeight
+            view.layoutParams = layoutParams
+
+            insets // 변경된 insets 반환
+        }
+    }
+
 
     private fun updateAdvertiseButtonIcon() {
         val iconRes = if (isAdvertising) {
@@ -158,6 +196,39 @@ class MainActivity : AppCompatActivity() {
             R.drawable.ic_bluetooth
         }
         topAppBar.navigationIcon = getDrawable(iconRes)
+    }
+
+    // RSSI 영역 기준
+    private val RSSI_RANGE_LOW = -80
+    private val RSSI_RANGE_MID = -40
+
+    private val activatedButtons = mutableSetOf<View>() // 활성화된 버튼 추적
+
+    private fun updateButtonsBasedOnRssi(rssi: Int, deviceIndex: Int) {
+        runOnUiThread {
+            // 버튼 그룹 선택
+            val buttonGroup = when {
+                rssi <= RSSI_RANGE_LOW -> userButtons.subList(0, 6) // user1 to user6
+                rssi in (RSSI_RANGE_LOW + 1)..RSSI_RANGE_MID -> userButtons.subList(
+                    6,
+                    14
+                ) // user7 to user14
+                else -> userButtons.subList(14, 20) // user15 to user20
+            }
+
+            // 버튼 그룹에서 아직 활성화되지 않은 버튼 찾기
+            val availableButtons = buttonGroup.filter { it !in activatedButtons }
+
+            if (availableButtons.isNotEmpty()) {
+                val buttonToActivate = availableButtons.first() // 첫 번째 버튼 선택
+                buttonToActivate.visibility = View.VISIBLE
+                activatedButtons.add(buttonToActivate) // 활성화된 버튼 추적
+            } else {
+                Log.w("UpdateButtons", "활성화 가능한 버튼이 없습니다!")
+            }
+
+            Log.d("ActivatedButtons", "현재 활성화된 버튼: $activatedButtons")
+        }
     }
 
 
@@ -214,7 +285,11 @@ class MainActivity : AppCompatActivity() {
                         Log.d("Firestore", "사용자 문서 생성 성공: $userIdHash")
                     }
                     .addOnFailureListener { exception ->
-                        Toast.makeText(this, "사용자 정보 저장 실패: ${exception.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            "사용자 정보 저장 실패: ${exception.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
                         Log.e("Firestore", "사용자 정보 저장 실패: ${exception.message}")
                     }
             } else {
@@ -242,7 +317,10 @@ class MainActivity : AppCompatActivity() {
 
         // 권한 체크
         val hasAdvertisePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_ADVERTISE
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
             true
         }
@@ -277,7 +355,12 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         try {
-            bluetoothLeAdvertiser.startAdvertising(settings, advertiseData, scanResponseData, advertiseCallback)
+            bluetoothLeAdvertiser.startAdvertising(
+                settings,
+                advertiseData,
+                scanResponseData,
+                advertiseCallback
+            )
             isAdvertising = true
         } catch (e: Exception) {
             Log.e("Advertise", "광고 시작 중 예외 발생: ${e.message}")
@@ -290,13 +373,17 @@ class MainActivity : AppCompatActivity() {
 
         // 권한 체크
         val hasAdvertisePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_ADVERTISE
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
             true // Android S 미만에서는 해당 권한이 필요하지 않습니다.
         }
 
         if (!hasAdvertisePermission) {
-            Toast.makeText(this, "광고를 중지하려면 BLUETOOTH_ADVERTISE 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "광고를 중지하려면 BLUETOOTH_ADVERTISE 권한이 필요합니다.", Toast.LENGTH_LONG)
+                .show()
             return
         }
 
@@ -337,7 +424,7 @@ class MainActivity : AppCompatActivity() {
         // 스캔 결과 리스트 초기화
         scannedUserHashes.clear()
         scannedUsers.clear()
-        userAdapter.notifyDataSetChanged()
+        /* RecyclerView 안 쓰니까 일단 주석 처리userAdapter.notifyDataSetChanged()*/
 
         val bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
 
@@ -348,13 +435,23 @@ class MainActivity : AppCompatActivity() {
 
         // 권한 체크
         val hasScanPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         }
 
         if (!hasScanPermission) {
-            Toast.makeText(this, "BLUETOOTH_SCAN 또는 ACCESS_FINE_LOCATION 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                "BLUETOOTH_SCAN 또는 ACCESS_FINE_LOCATION 권한이 필요합니다.",
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 
@@ -386,9 +483,12 @@ class MainActivity : AppCompatActivity() {
     private fun stopScanning() {
         val bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
 
-        // 권한 체크
+// 권한 체크
         val hasScanPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
             true // Android S 미만에서는 해당 권한이 필요하지 않습니다.
         }
@@ -409,7 +509,7 @@ class MainActivity : AppCompatActivity() {
             Log.e("Scanner", "스캔 중지 중 예외 발생: ${e.message}")
             Toast.makeText(this, "스캔 중지 중 예외 발생: ${e.message}", Toast.LENGTH_LONG).show()
         }
-        // 스캔 종료 후 메시지 표시
+// 스캔 종료 후 메시지 표시
         Toast.makeText(this, "스캔이 완료되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
@@ -417,41 +517,89 @@ class MainActivity : AppCompatActivity() {
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
-            Log.d("Scanner", "스캔 결과 수신: ${result.device.address}, RSSI: ${result.rssi}")
 
             val serviceUuid = ParcelUuid(SERVICE_UUID)
             val serviceData = result.scanRecord?.getServiceData(serviceUuid)
+            val rssi = result.rssi
+            val currentTime = System.currentTimeMillis() // 현재 시간
 
             if (serviceData != null) {
                 val userIdHashString = Base64.encodeToString(serviceData, Base64.NO_WRAP)
-                val rssi = result.rssi
-                // 이미 수집된 사용자인지 확인
+
                 if (scannedUserHashes.add(userIdHashString)) {
-                    Log.d("Scanner", "새로운 사용자 발견: $userIdHashString, RSSI: $rssi")
-                    // 사용자 정보를 가져와 리스트에 추가
                     fetchUserInfo(userIdHashString, rssi)
+
+                    // 새로운 기기 발견 -> 사용자 추가
+                    val user = User(userIdHashString, "Unknown", "", "", rssi, currentTime)
+                    scannedUsers.add(user)
+
+                    // 버튼 활성화
+                    runOnUiThread {
+                        updateButtonsBasedOnRssi(rssi, scannedUsers.size)
+                    }
                 } else {
-                    // 이미 발견된 사용자라면 RSSI 업데이트
-                    updateUserRssi(userIdHashString, rssi)
+                    // 기존 기기 -> RSSI 및 마지막 인식 시간 업데이트
+                    val userIndex = scannedUsers.indexOfFirst { it.userIdHash == userIdHashString }
+                    if (userIndex != -1) {
+                        val user = scannedUsers[userIndex]
+                        scannedUsers[userIndex] =
+                            user.copy(rssi = rssi, lastSeenTimestamp = currentTime)
+                    }
                 }
             } else {
                 Log.e("Scanner", "serviceData를 가져올 수 없습니다.")
             }
         }
 
-        override fun onScanFailed(errorCode: Int) {
-            super.onScanFailed(errorCode)
-            Log.e("Scanner", "스캔 실패: $errorCode")
-            Toast.makeText(this@MainActivity, "스캔 실패: $errorCode", Toast.LENGTH_LONG).show()
-            isScanning = false
+    }
+
+    private fun removeInactiveDevices() {
+        val currentTime = System.currentTimeMillis()
+        val inactiveUsers = scannedUsers.filter { user ->
+            currentTime - user.lastSeenTimestamp > 5000 // 5초 이상 비활성 상태
+        }
+
+        runOnUiThread {
+            // 비활성화된 기기 처리
+            inactiveUsers.forEach { user ->
+                val userIndex = scannedUsers.indexOf(user)
+                if (userIndex != -1) {
+                    // 해당 기기의 버튼 숨기기
+                    userButtons[userIndex].visibility = View.GONE
+                    activatedButtons.remove(userButtons[userIndex]) // 활성화 리스트에서 제거
+                }
+
+                // 리스트에서 제거
+                scannedUsers.remove(user)
+                scannedUserHashes.remove(user.userIdHash)
+            }
         }
     }
+
+
+    // 주기적으로 연결 상태를 확인
+    private val connectionCheckHandler = Handler(Looper.getMainLooper())
+
+    private fun startConnectionCheck() {
+        connectionCheckHandler.postDelayed(object : Runnable {
+            override fun run() {
+                removeInactiveDevices()
+                connectionCheckHandler.postDelayed(this, 2000) // 2초마다 호출
+            }
+        }, 2000)
+    }
+
+    private fun stopConnectionCheck() {
+        connectionCheckHandler.removeCallbacksAndMessages(null)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
         try {
             stopAdvertising()
             stopScanning()
+            stopConnectionCheck() // 연결 상태 확인 중지
         } catch (e: Exception) {
             Log.e("MainActivity", "BLE 중지 중 예외 발생: ${e.message}")
         }
@@ -472,6 +620,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchUserInfo(userIdHash: String, rssi: Int) {
+        val currentTime = System.currentTimeMillis() // 현재 시간
+
         db.collection("users")
             .whereEqualTo("userIdHash", userIdHash)
             .get()
@@ -481,12 +631,14 @@ class MainActivity : AppCompatActivity() {
                         val nickname = document.getString("nickname") ?: "Unknown"
                         val smallTalk = document.getString("smallTalk") ?: ""
                         val ootd = document.getString("ootd") ?: ""
-                        val user = User(userIdHash, nickname, ootd, smallTalk, rssi)
+                        val user = User(userIdHash, nickname, ootd, smallTalk, rssi, currentTime)
                         scannedUsers.add(user)
 
                         // RSSI 값에 따라 리스트 정렬
                         scannedUsers.sortByDescending { it.rssi }
+                        /* RecyclerView 안 쓰니까 일단 주석 처리
                         userAdapter.notifyDataSetChanged()
+                        */
                         Log.d("Scanner", "사용자 정보 추가: $nickname, RSSI: $rssi")
                     }
                 } else {
@@ -506,7 +658,9 @@ class MainActivity : AppCompatActivity() {
                 scannedUsers[index] = user.copy(rssi = rssi)
                 // 리스트를 다시 정렬하고 어댑터에 변경 사항 알림
                 scannedUsers.sortByDescending { it.rssi }
-                userAdapter.notifyDataSetChanged()
+                /*
+                RecyclerView 안 쓰니까 일단 주석 처리userAdapter.notifyDataSetChanged()
+                * */
             }
         }
     }
@@ -524,6 +678,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 return true
             }
+
             R.id.menu_logout -> {
                 auth.signOut()
                 val intent = Intent(this, LoginActivity::class.java)
@@ -531,11 +686,13 @@ class MainActivity : AppCompatActivity() {
                 finish()
                 return true
             }
+
             R.id.action_question -> {
                 // AI 추천 메뉴 아이템 클릭 시 AIRecommendationBottomSheetFragment를 다이얼로그 형식으로 띄우기
                 showAIRecommendationFragment()
                 return true
             }
+
             else -> return super.onOptionsItemSelected(item)
         }
     }
