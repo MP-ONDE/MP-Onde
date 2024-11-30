@@ -5,5 +5,6 @@ data class User(
     val nickname: String,
     val ootd: String,
     val smallTalk: String,
-    val rssi: Int
+    val rssi: Int,
+    var lastSeenTimestamp: Long // 마지막으로 인식된 시간
 )
