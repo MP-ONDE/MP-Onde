@@ -144,15 +144,6 @@ class MainActivity : AppCompatActivity() {
             checkPermissionsAndStartScan()
         }
 
-
-        //임의의 채팅방을 나타내기 위해 실험하는 테스트 코드
-        val openChatRoomButton: Button = findViewById(R.id.openChatRoomButton)
-        openChatRoomButton.setOnClickListener {
-            val intent = Intent(this, ChatRoomActivity::class.java)
-            startActivity(intent)
-        }
-        //임의의 채팅방을 만들어서 주제 추천을 위한 임의의 코드
-
         userAdapter = UserAdapter(scannedUsers)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = userAdapter

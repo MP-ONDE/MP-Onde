@@ -29,7 +29,7 @@ import retrofit2.Response
 import java.util.concurrent.Semaphore
 
 class AIRecommendationBottomSheetFragment : DialogFragment() {
-//    private val apiKey 여기에 추가해야 정상적으로 작동함
+    private val apiKey = getString(R.string.openai_api_key)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
