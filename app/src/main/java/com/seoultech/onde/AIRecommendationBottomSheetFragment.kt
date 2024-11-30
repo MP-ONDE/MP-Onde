@@ -27,6 +27,7 @@ import retrofit2.Callback
 import retrofit2.Response
 class AIRecommendationBottomSheetFragment : DialogFragment() {
 //    private val apiKey 여기에 추가해야 정상적으로 작동함
+    private val apiKey = "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"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
