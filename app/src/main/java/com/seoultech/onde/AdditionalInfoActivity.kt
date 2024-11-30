@@ -10,7 +10,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
+import com.seoultech.onde.HashUtils.generateUserIdHash
 import java.io.ByteArrayOutputStream
 
 class AdditionalInfoActivity : AppCompatActivity() {
@@ -99,6 +101,7 @@ class AdditionalInfoActivity : AppCompatActivity() {
         val ootd = editTextOotd.text.toString().trim()
         val smallTalk = editTextSmallTalk.text.toString().trim()
         val sns = editTextSns.text.toString().trim()
+        val userIdHash = generateUserIdHash(userId)
 
         if (nickname.isEmpty() || selectedGender == null || age.isEmpty() ||
             interests.isEmpty() || ootd.isEmpty() || smallTalk.isEmpty()) {
@@ -106,6 +109,7 @@ class AdditionalInfoActivity : AppCompatActivity() {
             return
         }
 
+        // 기본 사용자 정보 저장
         val userInfo = hashMapOf(
             "nickname" to nickname,
             "gender" to selectedGender!!,
@@ -113,9 +117,12 @@ class AdditionalInfoActivity : AppCompatActivity() {
             "interests" to interests,
             "ootd" to ootd,
             "smallTalk" to smallTalk,
-            "sns" to sns
+            "sns" to sns,
+            "userIdHash" to userIdHash,
+            "verified" to true // 기본값으로 verified를 true로 설정
         )
 
+        // Firestore에 사용자 정보 저장
         db.collection("users").document(userId).set(userInfo)
             .addOnSuccessListener {
                 if (selectedPhotoUri != null) {
@@ -135,12 +142,25 @@ class AdditionalInfoActivity : AppCompatActivity() {
         val uploadTask = storageRef.putFile(selectedPhotoUri!!)
 
         uploadTask.addOnSuccessListener {
-            Toast.makeText(this, "사진이 저장되었습니다.", Toast.LENGTH_SHORT).show()
-            startMainActivity()
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                val photoUrl = uri.toString()
+
+                // Firestore에 사진 URL 추가 저장
+                db.collection("users").document(userId).set(
+                    mapOf("photoUrl" to photoUrl),
+                    SetOptions.merge() // 이미 존재하는 데이터에 병합
+                ).addOnSuccessListener {
+                    Toast.makeText(this, "사진이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                    startMainActivity()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(this, "사진 URL 가져오기 실패", Toast.LENGTH_SHORT).show()
+            }
         }.addOnFailureListener {
             Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
