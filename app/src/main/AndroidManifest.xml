@@ -16,10 +16,6 @@
         android:usesCleartextTraffic="true"
 
         tools:targetApi="31">
-
-        <!-- LoginActivity 등록 -->
-        <activity android:name=".LoginActivity" />
-
         <!-- ProfileEditActivity 등록 -->
         <activity android:name=".ProfileEditActivity" />
 
@@ -29,14 +25,18 @@
         <activity android:name=".DailyInformationActivity" />
 
         <activity
-            android:name=".App"
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".ChatRoomActivity" />
     </application>
 
     <!-- 위치 권한 -->

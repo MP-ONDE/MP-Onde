@@ -2,6 +2,7 @@ package com.seoultech.onde
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +19,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var editTextEmail: EditText
     private lateinit var editTextPassword: EditText
     private lateinit var buttonLogin: Button
-    private lateinit var buttonToggleLogin: Button
+    private lateinit var buttonRegister: Button
     private lateinit var buttonGoogleLogin: Button  // Google Sign-In button
 
     private var isLoginMode = true
@@ -38,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
         editTextEmail = findViewById(R.id.editTextEmail)
         editTextPassword = findViewById(R.id.editTextPassword)
         buttonLogin = findViewById(R.id.buttonLogin)
-        buttonToggleLogin = findViewById(R.id.buttonToggleLogin)
+        buttonRegister = findViewById(R.id.buttonRegister)
         buttonGoogleLogin = findViewById(R.id.buttonGoogleLogin)  // Reference Google Sign-In button
 
         // Initialize GoogleSignInHelper
@@ -91,11 +92,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        buttonToggleLogin.setOnClickListener {
+        buttonRegister.setOnClickListener {
             isLoginMode = !isLoginMode
             textTitle.text = if (isLoginMode) "로그인" else "회원가입"
             buttonLogin.text = if (isLoginMode) "로그인" else "회원가입"
-            buttonToggleLogin.text = if (isLoginMode) "회원가입 하기" else "로그인 하기"
+            buttonRegister.text = if (isLoginMode) "회원가입 하기" else "로그인 하기"
         }
     }
 
