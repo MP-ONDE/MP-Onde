@@ -30,6 +30,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -62,6 +64,17 @@ class MainActivity : AppCompatActivity() {
     private var isAdvertising = false
     // BLE 스캔 중지 핸들러
     private val scanHandler = Handler(Looper.getMainLooper())
+
+    // 스캔된 사용자 ID 해시를 저장할 집합 (중복 방지)
+    private val scannedUserHashes = mutableSetOf<String>()
+
+    // 사용자 정보를 저장할 리스트
+    private val scannedUsers = mutableListOf<User>()
+
+    // RecyclerView 및 어댑터
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var userAdapter: UserAdapter
+
     //위젯
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var startScanButton: Button
@@ -82,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             checkPermissionsAndToggleAdvertise(isAdvertising)
             updateAdvertiseButtonIcon()
         }
-
 
         // Firebase 초기화 및 사용자 등록
         auth = FirebaseAuth.getInstance()
@@ -326,6 +338,10 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "이미 스캔 중입니다.", Toast.LENGTH_SHORT).show()
             return
         }
+        // 스캔 결과 리스트 초기화
+        scannedUserHashes.clear()
+        scannedUsers.clear()
+        userAdapter.notifyDataSetChanged()
 
         val bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
 
@@ -397,40 +413,31 @@ class MainActivity : AppCompatActivity() {
             Log.e("Scanner", "스캔 중지 중 예외 발생: ${e.message}")
             Toast.makeText(this, "스캔 중지 중 예외 발생: ${e.message}", Toast.LENGTH_LONG).show()
         }
+        // 스캔 종료 후 메시지 표시
+        Toast.makeText(this, "스캔이 완료되었습니다.", Toast.LENGTH_SHORT).show()
     }
 
 
     private val scanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
-            Log.d("Scanner", "스캔 결과 수신: ${result.device.address}, RSSI: ${result.rssi}") // 추가 로그
+            Log.d("Scanner", "스캔 결과 수신: ${result.device.address}, RSSI: ${result.rssi}")
 
             val serviceUuid = ParcelUuid(SERVICE_UUID)
             val serviceData = result.scanRecord?.getServiceData(serviceUuid)
 
             if (serviceData != null) {
                 val userIdHashString = Base64.encodeToString(serviceData, Base64.NO_WRAP)
-                Log.d("Scanner", "스캔된 userIdHash: $userIdHashString") // 로그 추가
-
-                // Firestore에서 해시 값을 기반으로 사용자 정보 조회
-                val db = FirebaseFirestore.getInstance()
-                db.collection("users")
-                    .whereEqualTo("userIdHash", userIdHashString)
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        if (!documents.isEmpty) {
-                            for (document in documents) {
-                                val profile = document.getString("profile")
-                                Toast.makeText(this@MainActivity, "발견된 사용자 프로필: $profile", Toast.LENGTH_LONG).show()
-                                Log.d("Scanner", "프로필 발견: $profile")
-                            }
-                        } else {
-                            Log.d("Scanner", "쿼리 성공, 하지만 결과 없음")
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.e("Scanner", "사용자 정보 조회 실패: ${exception.message}")
-                    }
+                val rssi = result.rssi
+                // 이미 수집된 사용자인지 확인
+                if (scannedUserHashes.add(userIdHashString)) {
+                    Log.d("Scanner", "새로운 사용자 발견: $userIdHashString, RSSI: $rssi")
+                    // 사용자 정보를 가져와 리스트에 추가
+                    fetchUserInfo(userIdHashString, rssi)
+                } else {
+                    // 이미 발견된 사용자라면 RSSI 업데이트
+                    updateUserRssi(userIdHashString, rssi)
+                }
             } else {
                 Log.e("Scanner", "serviceData를 가져올 수 없습니다.")
             }
@@ -468,6 +475,46 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun fetchUserInfo(userIdHash: String, rssi: Int) {
+        db.collection("users")
+            .whereEqualTo("userIdHash", userIdHash)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val nickname = document.getString("nickname") ?: "Unknown"
+                        val smallTalk = document.getString("smallTalk") ?: ""
+                        val ootd = document.getString("ootd") ?: ""
+                        val user = User(userIdHash, nickname, ootd, smallTalk, rssi)
+                        scannedUsers.add(user)
+
+                        // RSSI 값에 따라 리스트 정렬
+                        scannedUsers.sortByDescending { it.rssi }
+                        userAdapter.notifyDataSetChanged()
+                        Log.d("Scanner", "사용자 정보 추가: $nickname, RSSI: $rssi")
+                    }
+                } else {
+                    Log.d("Scanner", "사용자 정보를 찾을 수 없습니다: $userIdHash")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Scanner", "사용자 정보 조회 실패: ${exception.message}")
+            }
+    }
+
+    private fun updateUserRssi(userIdHash: String, rssi: Int) {
+        val index = scannedUsers.indexOfFirst { it.userIdHash == userIdHash }
+        if (index != -1) {
+            val user = scannedUsers[index]
+            if (user.rssi != rssi) {
+                scannedUsers[index] = user.copy(rssi = rssi)
+                // 리스트를 다시 정렬하고 어댑터에 변경 사항 알림
+                scannedUsers.sortByDescending { it.rssi }
+                userAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+
     // 탑 바와 관련된 menu, layout 불러오기
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -502,8 +549,6 @@ class MainActivity : AppCompatActivity() {
         val fragment = AIRecommendationBottomSheetFragment.newInstance()
         fragment.show(supportFragmentManager, fragment.tag)
     }
-
-
 
 }
 
