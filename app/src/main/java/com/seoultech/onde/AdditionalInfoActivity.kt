@@ -109,6 +109,7 @@ class AdditionalInfoActivity : AppCompatActivity() {
             return
         }
 
+        // 기본 사용자 정보 저장
         val userInfo = hashMapOf(
             "nickname" to nickname,
             "gender" to selectedGender!!,
@@ -117,9 +118,11 @@ class AdditionalInfoActivity : AppCompatActivity() {
             "ootd" to ootd,
             "smallTalk" to smallTalk,
             "sns" to sns,
-            "userIdHash" to userIdHash
+            "userIdHash" to userIdHash,
+            "verified" to true // 기본값으로 verified를 true로 설정
         )
 
+        // Firestore에 사용자 정보 저장
         db.collection("users").document(userId).set(userInfo)
             .addOnSuccessListener {
                 if (selectedPhotoUri != null) {
@@ -141,9 +144,11 @@ class AdditionalInfoActivity : AppCompatActivity() {
         uploadTask.addOnSuccessListener {
             storageRef.downloadUrl.addOnSuccessListener { uri ->
                 val photoUrl = uri.toString()
+
+                // Firestore에 사진 URL 추가 저장
                 db.collection("users").document(userId).set(
                     mapOf("photoUrl" to photoUrl),
-                    SetOptions.merge()
+                    SetOptions.merge() // 이미 존재하는 데이터에 병합
                 ).addOnSuccessListener {
                     Toast.makeText(this, "사진이 저장되었습니다.", Toast.LENGTH_SHORT).show()
                     startMainActivity()
@@ -155,6 +160,7 @@ class AdditionalInfoActivity : AppCompatActivity() {
             Toast.makeText(this, "사진 업로드 실패", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)

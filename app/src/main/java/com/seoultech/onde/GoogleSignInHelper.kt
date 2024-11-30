@@ -22,7 +22,7 @@ class GoogleSignInHelper(private val context: Context) {
 
     init {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(R.string.default_web_client_id)) // Ensure Web Client ID is in `strings.xml`
+            .requestIdToken(context.getString(R.string.default_web_client_id)) // Ensure Web Client ID is in strings.xml
             .requestEmail()
             .build()
 
@@ -64,8 +64,7 @@ class GoogleSignInHelper(private val context: Context) {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     user?.let {
-                        saveUserToFirestore(it.uid)
-                        onSuccess("로그인 성공: ${it.email}")
+                        checkUserInFirestore(it.uid, onSuccess, onFailure)
                     }
                 } else {
                     onFailure("Firebase 인증 실패: ${task.exception?.message}")
@@ -73,18 +72,21 @@ class GoogleSignInHelper(private val context: Context) {
             }
     }
 
-    private fun saveUserToFirestore(userId: String) {
-        val user = hashMapOf(
-            "userId" to userId,
-            "username" to "기본 사용자명",
-            "profile" to "기본 프로필 내용"
-        )
-        db.collection("users").document(userId).set(user)
-            .addOnSuccessListener {
-                Toast.makeText(context, "Firestore에 사용자 정보 저장 성공", Toast.LENGTH_SHORT).show()
+    private fun checkUserInFirestore(userId: String, onSuccess: (String) -> Unit, onFailure: (String) -> Unit) {
+        db.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    // If user document exists, proceed with success
+                    onSuccess("로그인 성공: ${auth.currentUser?.email}")
+                } else {
+                    // If user document does not exist, redirect to AdditionalInfoActivity
+                    val intent = Intent(context, AdditionalInfoActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Start the activity from a non-activity context
+                    context.startActivity(intent)
+                }
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Firestore에 사용자 정보 저장 실패", Toast.LENGTH_SHORT).show()
+                onFailure("파이어베이스 사용자 정보 확인 실패: ${it.message}")
             }
     }
 
