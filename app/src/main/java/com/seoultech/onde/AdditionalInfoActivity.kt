@@ -117,7 +117,8 @@ class AdditionalInfoActivity : AppCompatActivity() {
             "ootd" to ootd,
             "smallTalk" to smallTalk,
             "sns" to sns,
-            "userIdHash" to userIdHash
+            "userIdHash" to userIdHash,
+            "lastseenTimestamp" to null
         )
 
         db.collection("users").document(userId).set(userInfo)
