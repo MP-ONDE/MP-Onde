@@ -109,7 +109,6 @@ class AdditionalInfoActivity : AppCompatActivity() {
             return
         }
 
-        // 기본 사용자 정보 저장
         val userInfo = hashMapOf(
             "nickname" to nickname,
             "gender" to selectedGender!!,
@@ -119,7 +118,8 @@ class AdditionalInfoActivity : AppCompatActivity() {
             "smallTalk" to smallTalk,
             "sns" to sns,
             "userIdHash" to userIdHash,
-            "verified" to true // 기본값으로 verified를 true로 설정
+            "verified" to true,
+            "lastseenTimestamp" to null
         )
 
         // Firestore에 사용자 정보 저장

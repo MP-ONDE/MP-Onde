@@ -148,6 +148,7 @@ class RegisterActivity : AppCompatActivity() {
             "userId" to userId,
             "username" to null,  // 기본 값
             "profile" to null, // 기본 값
+            "lastSeenTimestamp" to null,
             "verified" to verified  // 이메일 인증 여부 저장
         )
         db.collection("users").document(userId).set(user)
