@@ -26,7 +26,7 @@
         <!-- MainActivity 등록 -->
         <activity android:name=".MainActivity" />
         <activity android:name=".AdditionalInfoActivity" />
-
+        <activity android:name=".DailyInformationActivity" />
 
         <activity
             android:name=".App"

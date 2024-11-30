@@ -2,7 +2,6 @@ package com.seoultech.onde
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -81,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
                             val userId = auth.currentUser?.uid
                             if (userId != null) {
                                 saveUserToFirestore(userId)
-                                checkUserAdditionalInfo(userId)
+                                startAdditionalInfoActivity()
                             } else {
                                 Toast.makeText(this, "사용자 ID를 가져올 수 없습니다.", Toast.LENGTH_LONG).show()
                             }
@@ -100,8 +99,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun startMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun startDailyInformationActivity() {
+        val intent = Intent(this, DailyInformationActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -139,7 +138,8 @@ class LoginActivity : AppCompatActivity() {
             val task = googleSignInHelper.getSignedInAccountFromIntent(data)
             googleSignInHelper.handleSignInResult(task, { message ->
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                startMainActivity()
+                // 로그인 후 DailyInformationActivity로 이동
+                startDailyInformationActivity()
             }, { error ->
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
             })
@@ -152,16 +152,10 @@ class LoginActivity : AppCompatActivity() {
             db.collection("users").document(userId).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        // 사용자 정보가 이미 있으면 바로 MainActivity로
-                        val nickname = document.getString("nickname")
-                        if (nickname.isNullOrEmpty()) {
-                            // nickname이 없으면 추가 정보 입력 화면으로
-                            startAdditionalInfoActivity()
-                        } else {
-                            startMainActivity()
-                        }
+                        // 사용자 정보가 이미 있으면 DailyInformationActivity로 이동
+                        startDailyInformationActivity()
                     } else {
-                        // Firestore에 정보가 없다면, 추가 정보 입력 화면으로
+                        // Firestore에 정보가 없다면, 추가 정보 입력 화면으로 이동
                         startAdditionalInfoActivity()
                     }
                 }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- OOTD -->
+        <EditText
+            android:id="@+id/editTextOotd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="OOTD (최대 50자)"
+            android:maxLength="50"
+            android:inputType="text" />
+
+        <!-- Small Talk -->
+        <EditText
+            android:id="@+id/editTextSmallTalk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="오늘의 Small Talk (최대 30자)"
+            android:maxLength="30"
+            android:inputType="text" />
+
+        <!-- Photo Label (TextView) -->
+        <TextView
+            android:id="@+id/textViewPhotoLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="사진 (선택)"
+            android:textSize="16sp"
+            android:textColor="#000000" />
+
+        <!-- Photo Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/buttonUploadPhoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="사진 업로드" />
+
+            <Button
+                android:id="@+id/buttonTakePhoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="사진 촬영" />
+        </LinearLayout>
+
+        <!-- Photo Preview -->
+        <ImageView
+            android:id="@+id/imageViewPhotoPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="8dp"
+            android:background="#CCCCCC" />
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/buttonSaveInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="정보 저장" />
+    </LinearLayout>
+</ScrollView>
