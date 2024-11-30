@@ -138,16 +138,12 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         topAppBar = findViewById(R.id.topAppBar)
         startScanButton = findViewById(R.id.startScanButton)
-        recyclerView = findViewById(R.id.recyclerView) // XML 레이아웃에 RecyclerView 추가
 
         startScanButton.setOnClickListener {
             checkPermissionsAndStartScan()
         }
 
         userAdapter = UserAdapter(scannedUsers)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = userAdapter
-
         updateAdvertiseButtonIcon()
     }
 
