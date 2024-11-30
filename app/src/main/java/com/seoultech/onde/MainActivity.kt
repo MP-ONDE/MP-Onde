@@ -138,16 +138,19 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         topAppBar = findViewById(R.id.topAppBar)
         startScanButton = findViewById(R.id.startScanButton)
-        recyclerView = findViewById(R.id.recyclerView) // XML 레이아웃에 RecyclerView 추가
-
 
         startScanButton.setOnClickListener {
             checkPermissionsAndStartScan()
         }
 
-        userAdapter = UserAdapter(scannedUsers)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = userAdapter
+
+        //임의의 채팅방을 나타내기 위해 실험하는 테스트 코드
+        val openChatRoomButton: Button = findViewById(R.id.openChatRoomButton)
+        openChatRoomButton.setOnClickListener {
+            val intent = Intent(this, ChatRoomActivity::class.java)
+            startActivity(intent)
+        }
+        //임의의 채팅방을 만들어서 주제 추천을 위한 임의의 코드
 
         updateAdvertiseButtonIcon()
     }
@@ -198,6 +201,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveUserToFirestore(userId: String?) {
+        try {
+            val db = FirebaseFirestore.getInstance()
+            val userIdHash = HashUtils.generateUserIdHash(userId ?: "unknown")
+            val user = hashMapOf(
+                "userId" to userId,
+                "userIdHash" to userIdHash,
+                "username" to "기본 사용자명",
+                "profile" to "기본 프로필 내용"
+            )
+            if (userId != null) {
+                db.collection("users").document(userId).set(user)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "사용자 등록 성공", Toast.LENGTH_LONG).show()
+                        Log.d("Firestore", "사용자 문서 생성 성공: $userIdHash")
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(this, "사용자 정보 저장 실패: ${exception.message}", Toast.LENGTH_LONG).show()
+                        Log.e("Firestore", "사용자 정보 저장 실패: ${exception.message}")
+                    }
+            } else {
+                Log.e("Firestore", "userId가 null입니다. Firestore에 저장하지 않습니다.")
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "사용자 정보 저장 중 오류 발생: ${e.message}")
+        }
+    }
 
     private fun startAdvertising() {
         val bluetoothLeAdvertiser = bluetoothAdapter?.bluetoothLeAdvertiser
