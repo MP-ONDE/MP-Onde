@@ -38,6 +38,8 @@
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:background="#FF2B4D"
             android:text="전송"
             android:enabled="false" />
     </LinearLayout>

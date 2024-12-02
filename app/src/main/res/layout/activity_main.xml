@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/mainActivity">
+    android:id="@+id/mainActivity"
+    android:background="#FFFFFF">
 
     <!-- 상단 앱바 -->
 
@@ -26,11 +27,12 @@
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#9B9B9B"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_main"
         app:navigationIcon="@drawable/ic_bluetooth"
-        app:title="ONDE" />
+        app:title="ONDE"
+        app:titleTextColor="@color/black"/>
 
 
     <!-- BLE 스캔 시작 버튼 -->
