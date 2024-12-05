@@ -3,6 +3,9 @@ package com.seoultech.onde
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,6 +17,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.seoultech.onde.HashUtils.generateUserIdHash
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 class AdditionalInfoActivity : AppCompatActivity() {
 
@@ -168,19 +172,64 @@ class AdditionalInfoActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun getRotationAngle(uri: Uri): Float {
+        val inputStream: InputStream? = contentResolver.openInputStream(uri)
+        val exif = inputStream?.let { ExifInterface(it) }
+        val orientation = exif?.getAttributeInt(
+            ExifInterface.TAG_ORIENTATION,
+            ExifInterface.ORIENTATION_NORMAL
+        )
+        inputStream?.close()
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+            else -> 0f
+        }
+    }
+
+    // 비트맵을 회전시키는 함수
+    private fun rotateBitmap(bitmap: Bitmap, angle: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    // URI를 받아 EXIF 정보를 기반으로 이미지를 수정
+    private fun getCorrectedBitmap(uri: Uri): Bitmap {
+        val inputStream: InputStream? = contentResolver.openInputStream(uri)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
+
+        val rotationAngle = getRotationAngle(uri)
+        return rotateBitmap(originalBitmap, rotationAngle)
+    }
+
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_IMAGE_PICK -> {
+                    // 갤러리에서 선택한 이미지 처리
                     selectedPhotoUri = data?.data
-                    imageViewPhotoPreview.setImageURI(selectedPhotoUri)
+                    selectedPhotoUri?.let {
+                        val correctedBitmap = getCorrectedBitmap(it)
+                        imageViewPhotoPreview.setImageBitmap(correctedBitmap)
+                    }
                 }
                 REQUEST_IMAGE_CAPTURE -> {
+                    // 카메라로 찍은 이미지 처리
                     val photoBitmap = data?.extras?.get("data") as Bitmap
                     selectedPhotoUri = bitmapToUri(photoBitmap)
-                    imageViewPhotoPreview.setImageBitmap(photoBitmap)
+
+                    // EXIF 정보를 사용하여 이미지를 회전
+                    selectedPhotoUri?.let {
+                        val correctedBitmap = getCorrectedBitmap(it)
+                        imageViewPhotoPreview.setImageBitmap(correctedBitmap)
+                    }
                 }
             }
         }

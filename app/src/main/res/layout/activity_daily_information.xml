@@ -2,14 +2,45 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today's Information"
+            android:textColor="#000000"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="2"
+            />
+
         <!-- OOTD -->
+
+        <TextView
+            android:id="@+id/ootdText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Outfit of The Day"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
         <EditText
             android:id="@+id/editTextOotd"
             android:layout_width="match_parent"
@@ -19,6 +50,22 @@
             android:inputType="text" />
 
         <!-- Small Talk -->
+
+        <TextView
+            android:id="@+id/smalltalkText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today's Small Talk"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
+
         <EditText
             android:id="@+id/editTextSmallTalk"
             android:layout_width="match_parent"
@@ -29,13 +76,19 @@
 
         <!-- Photo Label (TextView) -->
         <TextView
-            android:id="@+id/textViewPhotoLabel"
-            android:layout_width="match_parent"
+            android:id="@+id/photoText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="사진 (선택)"
-            android:textSize="16sp"
-            android:textColor="#000000" />
+            android:text="Today's Photo ( Optional )"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:textStyle="bold"
+            android:shadowColor="#80000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="1" />
 
         <!-- Photo Buttons -->
         <LinearLayout
@@ -46,34 +99,54 @@
 
             <Button
                 android:id="@+id/buttonUploadPhoto"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="사진 업로드" />
+                android:background="#FF6F61"
+                android:textSize="15sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:text="Upload"
+                android:layout_marginEnd="8dp"
+                android:textAllCaps="false"/>
 
             <Button
                 android:id="@+id/buttonTakePhoto"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="사진 촬영" />
+                android:background="#FF6F61"
+                android:textSize="15sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:text="Camera"
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <!-- Photo Preview -->
-        <ImageView
-            android:id="@+id/imageViewPhotoPreview"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="8dp"
-            android:background="#CCCCCC" />
 
         <!-- Save Button -->
+        <ImageView
+            android:id="@+id/imageViewPhotoPreview"
+            android:layout_width="225dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:background="#474747"
+            android:scaleType="fitCenter" />
+
         <Button
             android:id="@+id/buttonSaveInfo"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="정보 저장" />
+            android:layout_weight="1"
+            android:background="#FF6F61"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:text="Save"
+            android:layout_gravity="end" />
     </LinearLayout>
 </ScrollView>

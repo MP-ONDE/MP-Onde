@@ -208,9 +208,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private fun updateAdvertiseButtonIcon() {
         val iconRes = if (isAdvertising) {
-            R.drawable.ic_bluetooth_disabled
-        } else {
             R.drawable.ic_bluetooth
+        } else {
+            R.drawable.ic_bluetooth_disabled
         }
         topAppBar.navigationIcon = getDrawable(iconRes)
     }
