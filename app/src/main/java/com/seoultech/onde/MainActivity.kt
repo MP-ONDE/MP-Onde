@@ -42,13 +42,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.UUID
 import kotlin.math.sqrt
-
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
     private lateinit var requestMultiplePermissionsLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var vibrator: Vibrator
 
     private val requiredPermissions = mutableListOf<String>().apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -106,6 +109,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         enableEdgeToEdge()
 
         setContentView(R.layout.activity_main)
+        vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        }
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
@@ -422,7 +432,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             .build()
 
         try {
-            bluetoothLeScanner.startScan(filters, settings, scanCallback)
+            bluetoothLeScanner.run { startScan(filters, settings, scanCallback) }
             isScanning = true
             Toast.makeText(this, "BLE 스캔을 시작합니다.", Toast.LENGTH_SHORT).show()
 
@@ -484,17 +494,20 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 val userIdHashString = Base64.encodeToString(serviceData, Base64.NO_WRAP)
 
                 if (scannedUserHashes.add(userIdHashString)) {
-                    // New user
+                    // 새로운 사용자 추가
                     val user = User(userIdHashString, "Unknown", "", "", rssi, currentTime)
                     scannedUsers.add(user)
                     updateButtonsBasedOnRssi(user)
                     fetchUserInfo(userIdHashString, rssi)
+
+                    // 진동 울리기
+                    vibrateOnNewScan()
                 } else {
-                    // Existing user; update RSSI and timestamp
+                    // 기존 사용자, RSSI 및 타임스탬프 업데이트
                     updateUserRssi(userIdHashString, rssi)
                 }
             } else {
-                Log.e("Scanner", "Unable to retrieve serviceData.")
+                Log.e("Scanner", "serviceData를 가져올 수 없습니다.")
             }
         }
     }
@@ -752,6 +765,17 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // 센서 정확도 변경 시 처리할 내용 (필요 없으면 비워두기)
     }
 
+
+    // 새로운 사용자 스캔 시 진동 실행
+    private fun vibrateOnNewScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val vibrationEffect =
+                VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE) // 200ms 진동
+            vibrator.vibrate(vibrationEffect)
+        } else {
+            vibrator.vibrate(200) // 200ms 진동
+        }
+    }
 }
 
 
