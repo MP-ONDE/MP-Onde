@@ -29,6 +29,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // data 필드 처리
         val userId = remoteMessage.data["userId"] ?: return
+        val senderId = remoteMessage.data["senderId"] ?: return
         val chatId = remoteMessage.data["chatId"] ?: return
 
         // 알림 제목과 본문
