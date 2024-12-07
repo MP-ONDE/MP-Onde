@@ -8,15 +8,9 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/menu_logout"
-        android:title="로그아웃"
-        android:icon="@drawable/ic_logout"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_question"
-        android:title="AI 추천"
-        android:icon="@drawable/ic_question"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
-
+        android:id="@+id/menu_extra_function"
+        android:title="더보기"
+        android:icon="@drawable/ic_extra"
+        app:showAsAction="ifRoom"
+        app:actionLayout="@layout/action_extra_function_layout" />
 </menu>

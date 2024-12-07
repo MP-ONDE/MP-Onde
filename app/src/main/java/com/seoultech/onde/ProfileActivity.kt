@@ -1,4 +1,3 @@
-// ProfileActivity.kt
 package com.seoultech.onde
 
 import android.content.Intent

@@ -30,16 +30,15 @@
         android:text="Today's Small Talk"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"
         android:shadowColor="#80000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
+        android:shadowDx="3"
+        android:shadowDy="3"
         android:shadowRadius="1"
         app:layout_constraintTop_toBottomOf="@+id/interestTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="205dp"
+        android:layout_marginEnd="215dp"
         />
 
     <TextView
@@ -54,7 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginStart="20dp"/>
 
     <!-- Age -->
     <TextView
@@ -64,16 +63,15 @@
         android:text="Age"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"
         android:shadowColor="#80000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
+        android:shadowDx="3"
+        android:shadowDy="3"
         android:shadowRadius="1"
         app:layout_constraintTop_toBottomOf="@+id/nicknameTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="305dp"
+        android:layout_marginEnd="305dp"
         />
 
     <TextView
@@ -98,16 +96,15 @@
         android:text="Interest"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"
         android:shadowColor="#80000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
+        android:shadowDx="3"
+        android:shadowDy="3"
         android:shadowRadius="1"
         app:layout_constraintTop_toBottomOf="@+id/ootdTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="280dp"
+        android:layout_marginEnd="280dp"
         />
 
     <TextView
@@ -132,16 +129,15 @@
         android:text="Gender"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"
         android:shadowColor="#80000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
+        android:shadowDx="3"
+        android:shadowDy="3"
         android:shadowRadius="1"
         app:layout_constraintTop_toBottomOf="@+id/nicknameTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="165dp"
+        android:layout_marginEnd="165dp"
         />
 
     <TextView
@@ -166,16 +162,15 @@
         android:text="Outfit of The Day"
         android:textColor="#000000"
         android:textSize="15sp"
-        android:textStyle="bold"
         android:shadowColor="#80000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
+        android:shadowDx="3"
+        android:shadowDy="3"
         android:shadowRadius="1"
         app:layout_constraintTop_toBottomOf="@+id/ageTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="220dp"
+        android:layout_marginEnd="220dp"
         />
     <TextView
         android:id="@+id/ootdTextView"
@@ -205,14 +200,15 @@
         android:id="@+id/openChatRoomButton"
         android:layout_width="70dp"
         android:layout_height="40dp"
-        android:layout_marginTop="20dp"
-        android:background="#FF6F61"
+        android:layout_marginTop="50dp"
+        android:background="#FD4561"
         android:textColor="#FFFFFF"
+        android:textStyle="bold"
         android:text="Chat"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.939"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="300dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
