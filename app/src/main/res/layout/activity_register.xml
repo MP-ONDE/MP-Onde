@@ -44,8 +44,8 @@
         android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:layout_marginRight="180dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,7 +68,7 @@
         app:layout_constraintTop_toTopOf="@id/registerTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"/>
+        android:layout_marginRight="215dp"/>
 
     <EditText
         android:id="@+id/registerEmail"
@@ -106,7 +106,7 @@
         app:layout_constraintTop_toTopOf="@id/registerEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"/>
+        android:layout_marginRight="190dp"/>
 
 
     <EditText
@@ -142,7 +142,7 @@
         app:layout_constraintTop_toTopOf="@id/registerPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"/>
+        android:layout_marginLeft="180dp"/>
 
     <!-- 진행 상황 표시 -->
     <ProgressBar
