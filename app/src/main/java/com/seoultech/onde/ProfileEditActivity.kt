@@ -10,15 +10,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.seoultech.onde.HashUtils.generateUserIdHash
-import java.io.ByteArrayOutputStream
 import com.squareup.picasso.Picasso
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 class ProfileEditActivity : AppCompatActivity() {
@@ -160,6 +164,7 @@ class ProfileEditActivity : AppCompatActivity() {
         }
 
         val userInfo = hashMapOf(
+            "userId" to userId,
             "nickname" to nickname,
             "gender" to selectedGender!!,
             "age" to age,

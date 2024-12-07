@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.messaging.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,6 +76,8 @@ dependencies {
     // Google Sign-In
     implementation ("com.google.android.gms:play-services-auth:20.7.0'")
 
+    implementation ("com.google.firebase:firebase-messaging")
+
     // jetapack compose
     implementation("androidx.compose.ui:ui:1.5.1")
     implementation("androidx.compose.material:material:1.5.1")
@@ -87,11 +90,6 @@ dependencies {
     implementation ("org.jsoup:jsoup:1.15.4")
     implementation ("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("io.github.cdimascio:dotenv-kotlin:6.2.2")
-
-
-
-
-
 
     // picasso
     implementation ("com.squareup.picasso:picasso:2.71828")

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView // 필요 시 추가
 import androidx.recyclerview.widget.RecyclerView
 
 class UserAdapter(private val users: List<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -23,9 +22,10 @@ class UserAdapter(private val users: List<User>) : RecyclerView.Adapter<UserAdap
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val user = users[position]
+                    Log.d("UserAdapter", "클릭된 User: userId=${user.userId}, userIdHash=${user.userIdHash}")
                     // 여기서 직접 인텐트를 생성하여 ProfileActivity를 시작합니다.
                     val intent = Intent(itemView.context, ProfileActivity::class.java)
-                    intent.putExtra("userIdHash", user.userIdHash)
+                    intent.putExtra("userId", user.userId)
                     itemView.context.startActivity(intent)
                 } else {
                     Log.e("UserAdapter", "유효하지 않은 위치: $position")
