@@ -3,5 +3,8 @@
     <style name="Base.Theme.ONDE" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- 기본 폰트 설정 -->
+        <item name="android:fontFamily">@font/itim</item>
+        <item name="fontFamily">@font/itim</item>
     </style>
 </resources>
