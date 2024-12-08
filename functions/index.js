@@ -17,7 +17,7 @@ exports.sendNotificationOnMessage = onDocumentCreated(
     "chats/{chatId}/messages/{messageId}",
     async (event) => {
         try {
-            const messageData = event.data;
+            const messageData = event.data.data();
             const chatId = event.params.chatId;
 
             if (!messageData) {
@@ -34,6 +34,7 @@ exports.sendNotificationOnMessage = onDocumentCreated(
             const chatData = chatDoc.data();
             const participants = chatData?.participants || [];
             const senderId = messageData.senderId;
+
             const otherUserId = participants.find(uid => uid !== senderId);
 
             if (!otherUserId) {

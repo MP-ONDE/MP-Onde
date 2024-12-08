@@ -105,6 +105,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var startScanButton: Button
     private lateinit var userButtons: List<View>
 
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                Toast.makeText(this, "알림 권한이 허용되지 않았습니다. 알림을 받을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     // 생성
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,6 +135,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         // UI 요소 초기화 및 이벤트 리스너 설정
         initViews()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
+            if (ContextCompat.checkSelfPermission(this, notificationPermission)
+                != PackageManager.PERMISSION_GRANTED) {
+                requestNotificationPermissionLauncher.launch(notificationPermission)
+            }
+        }
 
         adjustTopMarginForStatusBar()
         startConnectionCheck() // 연결 상태 확인 시작
