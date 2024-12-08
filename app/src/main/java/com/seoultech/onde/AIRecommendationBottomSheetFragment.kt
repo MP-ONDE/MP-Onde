@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import org.json.JSONArray
@@ -27,15 +29,16 @@ import retrofit2.Callback
 import retrofit2.Response
 class AIRecommendationBottomSheetFragment : DialogFragment() {
     private val apiKey = " "
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.activity_ai_recommendation, container, false)
+        val closeButton: ImageButton = view.findViewById(R.id.closeButton)
 
-        val toolbar: MaterialToolbar = view.findViewById(R.id.topAppBarSmallTalk)
-        toolbar.setNavigationOnClickListener {
-            dismiss() // DialogFragment 닫기
+        closeButton.setOnClickListener{
+            dismiss()
         }
 
         val crawledSentences: TextView = view.findViewById(R.id.crawledSentences)
@@ -63,6 +66,17 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
 
         return view
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        // 가로: 화면 너비의 80%, 세로: 화면 높이의 80%
+        dialog?.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(),
+            (resources.displayMetrics.heightPixels * 0.8).toInt()
+        )
+    }
+
 
     private fun fetchCrawledData(crawledSentences: TextView) {
         val call = RetrofitClient.instance.getCrawledData()
@@ -99,7 +113,7 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
 
     private fun fetchGPTResponse(userQuestion: String, gptAnswer: TextView) {
         val apiUrl = "https://api.openai.com/v1/chat/completions"
-
+    //  val apiKey = " "
         val client = OkHttpClient()
         val jsonBody = JSONObject().apply {
             put("model", "gpt-3.5-turbo") // 최신 모델 사용

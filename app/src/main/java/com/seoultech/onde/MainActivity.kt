@@ -2,6 +2,7 @@ package com.seoultech.onde
 
 import AIRecommendationBottomSheetFragment
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
@@ -23,14 +24,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import android.provider.Settings
 import android.util.Base64
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -47,6 +43,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.seoultech.onde.FirebaseUtils.saveFcmTokenToFirestore
 import java.util.UUID
 import kotlin.math.sqrt
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.Switch
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var auth: FirebaseAuth
@@ -104,6 +106,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var topAppBar: MaterialToolbar
     private lateinit var startScanButton: Button
     private lateinit var userButtons: List<View>
+    private lateinit var extraFunctionButton: ImageView
+    private lateinit var editProfileButton: ImageView
+
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -113,6 +118,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
     // 생성
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -160,12 +166,39 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Hide all buttons initially
         userButtons.forEach { it.visibility = View.GONE }
 
-        // 상단 앱바 설정
+        //상단 앱바 및 블루투스 스위치 설정
+        val bluetoothSwitch: Switch = findViewById(R.id.bluetoothSwitch)
+
         setSupportActionBar(topAppBar)
-        topAppBar.setNavigationOnClickListener {
-            isAdvertising = !isAdvertising
+        bluetoothSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                isAdvertising = true
+            } else {
+                isAdvertising = false
+            }
             checkPermissionsAndToggleAdvertise(isAdvertising)
             updateAdvertiseButtonIcon()
+        }
+        topAppBar.setNavigationOnClickListener {
+            isAdvertising = !isAdvertising
+            bluetoothSwitch.isChecked = isAdvertising
+            checkPermissionsAndToggleAdvertise(isAdvertising)
+            updateAdvertiseButtonIcon()
+        }
+
+        // 상단 앱바 위의 버튼들
+        extraFunctionButton = findViewById(R.id.extraFunctionButton)
+        editProfileButton = findViewById(R.id.editProfileButton)
+
+        // extraFunctionButton 클릭 시 PopupMenu 표시
+        extraFunctionButton.setOnClickListener {
+            showDropdownMenu(it)
+        }
+
+        // editProfileButton 클릭 시 프로필 수정 화면으로 이동
+        editProfileButton.setOnClickListener {
+            val intent = Intent(this, ProfileEditActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -723,38 +756,38 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
+    private fun showDropdownMenu(anchorView: View) {
+        val popupMenu = PopupMenu(this, anchorView)
+        popupMenu.menuInflater.inflate(R.menu.main_dropdown_menu, popupMenu.menu)
 
-    // 탑 바와 관련된 menu, layout 불러오기
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_edit_profile -> {
-                val intent = Intent(this, ProfileEditActivity::class.java)
-                startActivity(intent)
-                return true
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_calendar -> {
+                    // Calendar 실행 코드
+                    val intent = Intent(this, CalendarActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.menu_asktoai -> {
+                    // AI 추천 메뉴 아이템 클릭 시 AIRecommendationBottomSheetFragment를 다이얼로그 형식으로 띄우기
+                    showAIRecommendationFragment()
+                    true
+                }
+                R.id.menu_logout -> {
+                    // 로그아웃 코드
+                    auth.signOut()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
             }
-
-            R.id.menu_logout -> {
-                auth.signOut()
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-                return true
-            }
-
-            R.id.action_question -> {
-                // AI 추천 메뉴 아이템 클릭 시 AIRecommendationBottomSheetFragment를 다이얼로그 형식으로 띄우기
-                showAIRecommendationFragment()
-                return true
-            }
-
-            else -> return super.onOptionsItemSelected(item)
         }
+
+        popupMenu.show()
     }
+
 
     private fun showAIRecommendationFragment() {
         // AIRecommendationBottomSheetFragment 인스턴스를 생성하고 다이얼로그로 띄우기
