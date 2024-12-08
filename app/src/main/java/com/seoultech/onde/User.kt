@@ -2,7 +2,6 @@ package com.seoultech.onde
 
 data class User(
     val userIdHash: String,
-    val userId: String,
     val nickname: String,
     val ootd: String,
     val smallTalk: String,

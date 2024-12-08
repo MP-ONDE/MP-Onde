@@ -36,14 +36,16 @@ class ProfileActivity : AppCompatActivity() {
         profilePhoto = findViewById(R.id.profilePhoto)
         openChatRoomButton = findViewById(R.id.openChatRoomButton)
 
-        val SuserId = intent.getStringExtra("userId")
+        val userIdHash = intent.getStringExtra("userIdHash")
 
-        if (SuserId != null) {
-            fetchUserProfile(SuserId)
+        if (userIdHash != null) {
+            fetchUserProfile(userIdHash)
         } else {
-            Log.e("ProfileActivity", "SuserId가 전달되지 않았습니다.")
+            Log.e("ProfileActivity", "userIdHash가 전달되지 않았습니다.")
             finish()
         }
+        //임의의 채팅방을 나타내기 위해 실험하는 테스트 코드
+
         openChatRoomButton.setOnClickListener {
             val intent = Intent(this, ChatRoomActivity::class.java)
             startActivity(intent)
@@ -57,13 +59,13 @@ class ProfileActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     val document = documents.first()
-                    val userId = document.id
                     val nickname = document.getString("nickname") ?: "Unknown"
                     val smallTalk = document.getString("smallTalk") ?: ""
                     val age = document.getString("age") ?: ""
                     val gender = document.getString("gender") ?: ""
                     val interest = document.getString("interest") ?: ""
                     val ootd = document.getString("ootd") ?: ""
+//                    val userId = document.getString("userId") ?: ""
                     val photoUrl = document.getString("photoUrl")
                     if (photoUrl != null) {
                         Picasso.get()
@@ -82,7 +84,7 @@ class ProfileActivity : AppCompatActivity() {
                     // 채팅방 열기 버튼 클릭 리스너 설정
                     openChatRoomButton.setOnClickListener {
                         val intent = Intent(this, ChatRoomActivity::class.java)
-                        intent.putExtra("userId", userId)
+                        intent.putExtra("userIdHash", userIdHash)
                         startActivity(intent)
                     }
 

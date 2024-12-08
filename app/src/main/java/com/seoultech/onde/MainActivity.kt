@@ -1,6 +1,5 @@
 package com.seoultech.onde
 
-import AIRecommendationBottomSheetFragment
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
@@ -40,7 +39,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.seoultech.onde.FirebaseUtils.saveFcmTokenToFirestore
 import java.util.UUID
 import kotlin.math.sqrt
 import android.os.VibrationEffect
@@ -110,13 +108,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var editProfileButton: ImageView
 
 
-    private val requestNotificationPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (!isGranted) {
-                Toast.makeText(this, "알림 권한이 허용되지 않았습니다. 알림을 받을 수 없습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
     // 생성
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,14 +132,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         // UI 요소 초기화 및 이벤트 리스너 설정
         initViews()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val notificationPermission = Manifest.permission.POST_NOTIFICATIONS
-            if (ContextCompat.checkSelfPermission(this, notificationPermission)
-                != PackageManager.PERMISSION_GRANTED) {
-                requestNotificationPermissionLauncher.launch(notificationPermission)
-            }
-        }
 
         adjustTopMarginForStatusBar()
         startConnectionCheck() // 연결 상태 확인 시작
@@ -206,16 +189,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // Firebase 초기화 및 사용자 등록
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        val userId = auth.currentUser?.uid ?: "unknown"
         // 사용자 인증 상태 확인
         if (auth.currentUser == null) {
             // 사용자가 로그인하지 않은 경우, LoginActivity로 이동
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             return // 현재 액티비티를 종료하여 아래 코드가 실행되지 않도록 함
-        }
-        else{
-            saveFcmTokenToFirestore(userId)
         }
 
         // 권한 요청 초기화
@@ -244,7 +223,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 showPermissionSettingsDialog()
             }
         }
-
     }
 
     private fun initViews() {
@@ -550,7 +528,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
                 if (scannedUserHashes.add(userIdHashString)) {
                     // 새로운 사용자 추가
-                    val user = User(userIdHashString, userId = "","Unknown", "", "", rssi, currentTime)
+                    val user = User(userIdHashString, "Unknown", "", "", rssi, currentTime)
                     scannedUsers.add(user)
                     updateButtonsBasedOnRssi(user)
                     fetchUserInfo(userIdHashString, rssi)
@@ -710,29 +688,26 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     val document = documents.first()
                     val nickname = document.getString("nickname") ?: "Unknown"
                     val smallTalk = document.getString("smallTalk") ?: ""
-                    val userId = document.id // 문서 ID를 userId로 사용
                     val ootd = document.getString("ootd") ?: ""
 
-                    val user = User(
-                        userIdHash = userIdHash,
-                        userId = userId,
-                        nickname = nickname,
-                        smallTalk = smallTalk,
-                        ootd = ootd,
-                        rssi = rssi,
-                        lastSeenTimestamp = currentTime
-                    )
-
-
-                    // 스캔된 사용자 리스트 업데이트
+                    // Update existing user in scannedUsers
                     val index = scannedUsers.indexOfFirst { it.userIdHash == userIdHash }
                     if (index != -1) {
-                        scannedUsers[index] = user
+                        val user = scannedUsers[index]
+                        scannedUsers[index] = user.copy(
+                            nickname = nickname,
+                            smallTalk = smallTalk,
+                            ootd = ootd,
+                            rssi = rssi,
+                            lastSeenTimestamp = currentTime
+                        )
+                        updateButtonsBasedOnRssi(scannedUsers[index])
                     } else {
+                        // Should not happen, but handle just in case
+                        val user = User(userIdHash, nickname, ootd, smallTalk, rssi, currentTime)
                         scannedUsers.add(user)
+                        updateButtonsBasedOnRssi(user)
                     }
-
-                    updateButtonsBasedOnRssi(user)
                 } else {
                     Log.d("Scanner", "No user info found for: $userIdHash")
                 }
@@ -741,6 +716,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 Log.e("Scanner", "Failed to fetch user info: ${exception.message}")
             }
     }
+
 
     private fun updateUserRssi(userIdHash: String, rssi: Int) {
         val index = scannedUsers.indexOfFirst { it.userIdHash == userIdHash }
@@ -795,9 +771,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         fragment.show(supportFragmentManager, fragment.tag)
     }
 
-    private fun navigateToProfileActivity(userId: String) {
+    private fun navigateToProfileActivity(userIdHash: String) {
         val intent = Intent(this, ProfileActivity::class.java)
-        intent.putExtra("userId", userId)
+        intent.putExtra("userIdHash", userIdHash)
         startActivity(intent)
     }
 
@@ -832,9 +808,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         } else {
             vibrator.vibrate(200) // 200ms 진동
         }
-    }
-    private fun getCurrentUserId(): String? {
-        return FirebaseAuth.getInstance().currentUser?.uid
     }
 }
 
