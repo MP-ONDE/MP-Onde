@@ -24,12 +24,18 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.provider.Settings
 import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.Switch
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -43,12 +49,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.seoultech.onde.FirebaseUtils.saveFcmTokenToFirestore
 import java.util.UUID
 import kotlin.math.sqrt
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.Switch
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var auth: FirebaseAuth
@@ -779,6 +779,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
+                    true
+                }
+                R.id.menu_nfc_exchange -> {
+                    val intent = Intent(this, NfcExchangeActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
