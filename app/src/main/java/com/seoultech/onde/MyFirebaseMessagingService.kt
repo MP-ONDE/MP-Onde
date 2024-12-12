@@ -1,9 +1,8 @@
-package com.seoultech.onde
-
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,10 +10,15 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.seoultech.onde.ChatRoomActivity
+import com.seoultech.onde.MainActivity
+import com.seoultech.onde.ProfileActivity
+import com.seoultech.onde.R
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
@@ -59,57 +63,107 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // notification 필드가 있을 경우 제목/내용을 추출
-        val title = remoteMessage.notification?.title ?: "새 메시지"
-        val body = remoteMessage.notification?.body ?: "새로운 메시지가 도착했습니다."
+        val title = "New Smalltalk"
 
-        // data 필드 처리
         val userId = remoteMessage.data["userId"]
         val senderId = remoteMessage.data["senderId"]
         val chatId = remoteMessage.data["chatId"]
+        val messageContent = remoteMessage.notification?.body ?: "새로운 메시지가 도착했습니다."
 
-        // 필요한 데이터가 없으면 알림 표시를 안함
         if (userId == null || senderId == null || chatId == null) {
             Log.w("MyFirebaseMessaging", "필수 데이터 누락, 알림을 표시하지 않습니다.")
             return
         }
 
-        // 알림 클릭 시 ChatRoomActivity로 이동
-        val intent = Intent(this, ChatRoomActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra("userId", senderId)
-            putExtra("chatId", chatId)
-        }
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(senderId)
+            .get()
+            .addOnSuccessListener { document ->
+                val senderNickname = document.getString("nickname") ?: "알 수 없는 사용자"
+                val senderUserIdHash = document.getString("userIdHash")
+                val body = "$senderNickname: $messageContent"
 
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            chatId.hashCode(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+                // MainActivity용 Intent
+                val mainIntent = Intent(this, MainActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
+                // ProfileActivity용 Intent
+                val profileIntent = Intent(this, ProfileActivity::class.java)
+                profileIntent.putExtra("userId", senderUserIdHash)
+
+                // ChatRoomActivity용 Intent
+                val chatIntent = Intent(this, ChatRoomActivity::class.java)
+                chatIntent.putExtra("userId", senderId)
+                chatIntent.putExtra("chatId", chatId)
+
+                val pendingIntent = PendingIntent.getActivities(
+                    this,
+                    chatId.hashCode(),
+                    arrayOf(mainIntent, profileIntent, chatIntent),
+                    PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+                        return@addOnSuccessListener
+                    }
+                }
+
+                with(NotificationManagerCompat.from(this)) {
+                    notify(chatId.hashCode(), builder.build())
+                }
+            }
+    }
+
+    private fun showNotification(title: String, body: String, pendingIntent: PendingIntent) {
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification) // 실제 프로젝트 아이콘 리소스로 변경 필요
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-        // Android 13 이상에서 알림 권한 체크
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
-                Log.w("MyFirebaseMessaging", "POST_NOTIFICATIONS 권한이 없어 알림을 표시하지 못합니다.")
                 return
             }
         }
 
         with(NotificationManagerCompat.from(this)) {
-            notify(chatId.hashCode(), builder.build())
+            notify(System.currentTimeMillis().toInt(), builder.build())
         }
     }
 
+    private fun showDefaultNotification(title: String, message: String, senderId: String, chatId: String) {
+        val mainIntent = Intent(this, MainActivity::class.java)
+        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+        val chatIntent = Intent(this, ChatRoomActivity::class.java)
+        chatIntent.putExtra("userId", senderId)
+        chatIntent.putExtra("chatId", chatId)
+
+        val intents = arrayOf(mainIntent, chatIntent)
+
+        val pendingIntent = PendingIntent.getActivities(
+            this,
+            chatId.hashCode(),
+            intents,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        showNotification(title, message, pendingIntent)
+    }
     private fun createNotificationChannel() {
         // 오레오 이상에서 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

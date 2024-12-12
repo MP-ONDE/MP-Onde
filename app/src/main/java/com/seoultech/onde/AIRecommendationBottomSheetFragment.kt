@@ -28,8 +28,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 class AIRecommendationBottomSheetFragment : DialogFragment() {
-    private val apiKey = " "
     @SuppressLint("MissingInflatedId")
+    private val apiKey = getString(R.string.openai_api_key)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -113,7 +113,7 @@ class AIRecommendationBottomSheetFragment : DialogFragment() {
 
     private fun fetchGPTResponse(userQuestion: String, gptAnswer: TextView) {
         val apiUrl = "https://api.openai.com/v1/chat/completions"
-    //  val apiKey = " "
+        val apiKey = getString(R.string.openai_api_key)
         val client = OkHttpClient()
         val jsonBody = JSONObject().apply {
             put("model", "gpt-3.5-turbo") // 최신 모델 사용

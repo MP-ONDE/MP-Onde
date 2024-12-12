@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
             val password = editTextPassword.text.toString().trim()
 
             if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "유효한 이메일을 입력하세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Write in email form", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (password.length < 6) {
@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Log In!", Toast.LENGTH_SHORT).show()
                             checkUserAdditionalInfo(auth.currentUser?.uid)
                         } else {
                             Toast.makeText(this, "로그인 실패: ${task.exception?.message}", Toast.LENGTH_LONG).show()
@@ -94,9 +94,9 @@ class LoginActivity : AppCompatActivity() {
 
         buttonRegister.setOnClickListener {
             isLoginMode = !isLoginMode
-            textTitle.text = if (isLoginMode) "로그인" else "회원가입"
-            buttonLogin.text = if (isLoginMode) "로그인" else "회원가입"
-            buttonRegister.text = if (isLoginMode) "회원가입 하기" else "로그인 하기"
+            textTitle.text = if (isLoginMode) "Log in" else "Sign Up"
+            buttonLogin.text = if (isLoginMode) "Log in" else "Sign Up"
+            buttonRegister.text = if (isLoginMode) "Sign Up" else "Log in"
         }
     }
 
@@ -142,7 +142,7 @@ class LoginActivity : AppCompatActivity() {
                 // 로그인 후 DailyInformationActivity로 이동
                 startDailyInformationActivity()
             }, { error ->
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
             })
         }
     }
@@ -160,9 +160,9 @@ class LoginActivity : AppCompatActivity() {
                         startAdditionalInfoActivity()
                     }
                 }
-                .addOnFailureListener {
-                    Toast.makeText(this, "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
+//                .addOnFailureListener {
+//                    Toast.makeText(this, "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+//                }
         }
     }
 }

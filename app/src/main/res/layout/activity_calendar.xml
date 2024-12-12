@@ -5,7 +5,45 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarActivity">
+    tools:context=".CalendarActivity"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/calendarText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CALENDAR"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="150dp"
+        android:shadowColor="#80000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/calendarDesciption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Write a memo by clicking the date"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="60dp"
+        android:shadowColor="#80000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="2"
+        app:layout_constraintTop_toBottomOf="@+id/calendarText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <ImageButton
         android:id="@+id/backButton"
@@ -24,7 +62,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/calendarDesciption"
+        android:layout_marginTop="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

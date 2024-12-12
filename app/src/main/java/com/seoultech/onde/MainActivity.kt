@@ -421,7 +421,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
             super.onStartSuccess(settingsInEffect)
             Log.d("Advertise", "BLE 광고 시작 성공")
-            Toast.makeText(this@MainActivity, "BLE 광고 시작 성공", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "You cna be searched!", Toast.LENGTH_SHORT).show()
         }
 
         override fun onStartFailure(errorCode: Int) {
@@ -489,12 +489,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         try {
             bluetoothLeScanner.run { startScan(filters, settings, scanCallback) }
             isScanning = true
-            Toast.makeText(this, "BLE 스캔을 시작합니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Start Scanning!", Toast.LENGTH_SHORT).show()
 
             // 12초 후 스캔 중지
             scanHandler.postDelayed({
                 stopScanning()
-            }, 12000)
+            }, 600000)
         } catch (e: Exception) {
             Log.e("Scanner", "스캔 시작 중 예외 발생: ${e.message}")
             Toast.makeText(this, "스캔 시작 중 예외 발생: ${e.message}", Toast.LENGTH_LONG).show()
@@ -531,7 +531,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             Toast.makeText(this, "스캔 중지 중 예외 발생: ${e.message}", Toast.LENGTH_LONG).show()
         }
 // 스캔 종료 후 메시지 표시
-        Toast.makeText(this, "스캔이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Scan finished!", Toast.LENGTH_SHORT).show()
     }
 
 

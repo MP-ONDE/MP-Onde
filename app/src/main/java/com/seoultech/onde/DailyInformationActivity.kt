@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 
 class DailyInformationActivity : AppCompatActivity() {
@@ -85,7 +86,9 @@ class DailyInformationActivity : AppCompatActivity() {
                     // Load photo preview if available
                     val photoUrl = document.getString("photoUrl")
                     if (!photoUrl.isNullOrEmpty()) {
-                        imageViewPhotoPreview.setImageURI(Uri.parse(photoUrl))
+                        Picasso.get()
+                            .load(photoUrl)
+                            .into(imageViewPhotoPreview)
                     }
                 } else {
                     Toast.makeText(this, "사용자 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()

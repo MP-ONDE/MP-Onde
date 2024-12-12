@@ -15,12 +15,12 @@ class SplashActivity : AppCompatActivity() {
         // 전체 화면(Immersive Mode) 설정
         hideSystemUI()
 
-        // 2초 후에 로그인 액티비티로 이동
+        // 스플래시 화면을 2초 동안 보여준 후 자동 로그인 체크
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = (application as App).checkLoginAndRedirect()
             startActivity(intent)
-            finish() // 스플래시 액티비티 종료
-        }, 2000) // 2000ms = 2초
+            finish()
+        }, 2000) // 2초 대기
     }
     private fun hideSystemUI() {
         window.decorView.systemUiVisibility = (

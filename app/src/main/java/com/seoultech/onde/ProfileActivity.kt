@@ -62,7 +62,7 @@ class ProfileActivity : AppCompatActivity() {
                     val smallTalk = document.getString("smallTalk") ?: ""
                     val age = document.getString("age") ?: ""
                     val gender = document.getString("gender") ?: ""
-                    val interest = document.getString("interest") ?: ""
+                    val interest = document.getString("interests") ?: ""
                     val ootd = document.getString("ootd") ?: ""
                     val photoUrl = document.getString("photoUrl")
                     if (photoUrl != null) {
@@ -95,5 +95,9 @@ class ProfileActivity : AppCompatActivity() {
                 Log.e("ProfileActivity", "사용자 정보 조회 실패: ${exception.message}")
                 finish()
             }
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
     }
 }
