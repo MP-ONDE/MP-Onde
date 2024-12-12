@@ -21,13 +21,13 @@ class MemoDialogFragment(
         memoEditText.setText(savedMemo) // 저장된 메모가 있으면 불러오기
 
         builder.setView(view)
-            .setTitle("인상 깊은 상대가 있었나요? - $date")
-            .setPositiveButton("저장") { _, _ ->
+            .setTitle("$date\nIs there any Event?")
+            .setPositiveButton("Save") { _, _ ->
                 val memo = memoEditText.text.toString()
                 dbHelper.saveMemo(date, memo)
                 onSave() // 저장 후 콜백 호출
             }
-            .setNegativeButton("취소", null)
+            .setNegativeButton("Cancel", null)
 
         return builder.create()
     }
