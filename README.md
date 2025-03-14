@@ -52,9 +52,9 @@
    - 실시간 메시지 송수신 (Cloud Firestore 실시간 업데이트)  
    - 수신 메시지 읽음 처리, 미확인 메시지 개수(unread count) 관리
 
-5. **AI 멘트 추천(추가 기능)**  
-   - AIRecommendationBottomSheetFragment를 통해 스몰토크 주제나 질문 문장을 추천  
-   - ChatGPT API 등 외부 AI API를 연동 가능 (프로토타입/실험 단계)
+5. **AI 멘트 추천(ChatGPT API 필요)**  
+   - AI를 통해 스몰토크 주제나 질문 문장을 추천  
+   - ChatGPT API 등 외부 AI API를 연동 가능
 
 6. **일정/메모(캘린더) 기능**  
    - 사용자가 날짜별 메모를 작성할 수 있도록 SQLite(Local DB)를 활용  
