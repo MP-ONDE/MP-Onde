@@ -1,8 +1,14 @@
 # ONDE
+<br>
+<div align="center">
+  <img src="app/src/main/res/mipmap-xxxhdpi/onde_icon.png">
+</div>
+<br>
 
-**ONDE**는 잊혀져 가는 일상 속 스몰토크 문화를 되살리기 위해 기획된 소셜 미디어 서비스입니다.  
-서로 가까이에 있는 사람들과 가벼운 안부 인사나 스몰토크를 자연스럽게 교환할 수 있게 함으로써,  
+**ONDE**는 잊혀져 가는 일상 속 스몰토크 문화를 되살리기 위해 기획된 어플리케이션입니다.  
+서로 가까이에 있는 사람들과 가벼운 안부 인사나 스몰토크를 자연스럽게 교환할 수 있게 함으로써,
 스마트폰에만 몰두하는 현대 사회에서 사라져 가던 “정겨운 스몰토크” 문화를 부활시키는 데 목표가 있습니다.
+
 
 <br>
 
@@ -39,6 +45,7 @@
    - BLE(저전력 블루투스) 기능으로 주변 ONDE 앱 유저 탐색  
    - 특정 범위 내의 이용자 프로필을 UI 상 버튼으로 표시  
    - RSSI값(신호 세기)에 따라 사용자 위치 대략적 분류(가까움/중간/멀리)
+   - 흔들기 제스처(가속도 센서)로 BLE 스캔을 트리거하는 등 부가 UX 기능
 
 4. **채팅 기능**  
    - 두 사용자가 서로 연결되어 채팅방을 생성  
@@ -51,7 +58,6 @@
 
 6. **일정/메모(캘린더) 기능**  
    - 사용자가 날짜별 메모를 작성할 수 있도록 SQLite(Local DB)를 활용  
-   - 흔들기 제스처(가속도 센서)로 BLE 스캔을 트리거하는 등 부가 UX 기능
 
 <br>
 
@@ -111,8 +117,12 @@
    - Android Studio에서 `Run` 클릭 (실기기 혹은 에뮬레이터)
    - 회원가입 후, 로그인 & BLE On → 주변 사용자 스캔 가능
 
+## 👥 Member
+| [<img src="https://github.com/gom31.png">](https://github.com/gom31) | [<img src="https://github.com/ljs7143.png">](https://github.com/ljs7143) | [<img src="https://github.com/yeongJD.png">](https://github.com/yeongJD) |
+|:---:|:---:|:---:
+김관우|이준서|정동영
 ---
-
+<!--
 /프로젝트 정보
 ONDE  (크게 보이게, 가운데 정렬)
 
@@ -189,4 +199,4 @@ Login(signup)
 ProfileEdit
 - Implement editing username and profile
 
-# MP-Onde
+# MP-Onde -->
